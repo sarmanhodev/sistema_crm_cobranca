@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema CRM - Configurações</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!--BOOTSTRAP ICONS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--CDN JQUERY-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar bg-body-tertiary bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <button type="button" class="btn btn-primary m-1" disabled data-bs-toggle="modal" onclick="novoCadastro()"
+                data-bs-target="#modalAdicionaCadastro">
+                + Adicionar Usuário</button>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <img src="../static/imagens/crm.png" width="50" height="50" alt="logo">
+                    <a class="navbar-brand offcanvas-title" id="offcanvasNavbarLabel" href="#">Sistema CRM</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="row m-1">
+                    {%if current_user.is_authenticated %}
+                    <a class="text-white ">Seja bem-vindo(a) {{current_user.nome}}</a>
+                    {%endif%}
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " aria-current="page" href="{{url_for('home')}}"><i
+                                    class="bi bi-house-door-fill"></i> Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                Relatórios
+                            </a>
+                            <ul class="dropdown-menu">
+                                {%if current_user.is_authenticated%}
+                                <li><a class="dropdown-item"
+                                        href="{{url_for('graficos',token_acesso1=token_acesso1,gera_letra1=gera_letra1, usuario_id = current_user.id,gera_letra2=gera_letra2,token_acesso2=token_acesso2)}}"><i
+                                            class="bi bi-bar-chart-line-fill"></i> Gráficos</a></li>
+                                {%endif%}
+                            </ul>
+                        </li>
+                        {%if current_user.acesso_id == 2%}
+                        <li class="nav-item">
+                            <a class="nav-link active"
+                                href="{{url_for('painel_configuracoes_usuario', id = current_user.id)}}"
+                                aria-current="page">
+                                <i class="bi bi-gear"></i> Painel de Configurações
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if current_user.acesso_id == 1%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-speedometer2"></i> Painel do Administrador
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{url_for('painel_configuracoes')}}"><i
+                                            class="bi bi-gear"></i> Configurações
+                                        dos Usuários</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('inicio')}}"><i
+                                            class="bi bi-chat-left-text"></i> Scripts</a></li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-pdf"></i>
+                                Manual do Usuário
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" target="_blank" href="../static/documento/manual_sistema_crm.pdf"><i
+                                            class="bi bi-download"></i> Download Manual</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" aria-disabled="true" href="{{ url_for('logout') }}"><i
+                                    class="bi bi-box-arrow-left"></i> Logoff</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container">
+        <div class="row m-1">
+            <div class="col-md-10">
+                <div class="alert alert-success" role="alert">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="row m-3">
+        <div class="col-md-3">
+            <div class="row">
+                <a class="text-white" href="#configuracoes"><i class="bi bi-gear"></i> Configurações</a>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="row">
+                <div class="row m-1">
+                    <h5 class="text-white" id="configuracoes">Configurações</h5>
+                </div>
+
+                <div class="row-m-1">
+                    <form action="{{url_for('update_user', id = usuario.id)}}" method="post">
+                        <div class="row m-1">
+                            <div class="col-md-6">
+                                <span class="text-white fw-bold">
+                                    Alterar Nome
+                                </span>
+                                <div class="input-group mb-3">
+                                    <input type="text" value="{{usuario.nome}}" name="nomeusuario"
+                                        class="form-control bg-dark text-white" placeholder="Nome"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="text-white fw-bold">
+                                    Alterar E-mail
+                                </span>
+                                <div class="input-group mb-3">
+                                    <input type="text" value="{{usuario.email}}" name="emailusuario"
+                                        class="form-control bg-dark text-white" placeholder="Email"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+
+                            <div class="col-md-4">
+                                <span class="text-white fw-bold">
+                                    Alterar Senha
+                                </span>
+                                <div class="input-group mb-3">
+                                    <input type="password" name="input_senha" id="input_senha" minlength="6"
+                                        class="form-control bg-dark text-white" placeholder="Senha"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    <button class="btn bg-dark border-white text-white" title="Ver senha digitada" onclick="togglePass()"
+                                        type="button" id="btn-1"><i class="bi bi-eye"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <span class="text-white fw-bold">
+                                    Confirme a Senha
+                                </span>
+                                <div class="input-group mb-3">
+                                    <input type="password" name="senha_usuario" onkeyup="verifica_senha()" minlength="6"
+                                        id="senha_usuario" class="form-control bg-dark text-white" placeholder="Senha"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    <button class="btn bg-dark border-white text-white" title="Ver senha digitada" onclick="togglePass()"
+                                        type="button" id="btn-2"><i class="bi bi-eye"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            <h6 class='text-white fw-bold' id="frase" style="display: none;">Senhas diferentes!</h6>
+                            <div class="col-auto">
+                                <button type="submit" style="display: none;" class="btn btn-success card_deal" id="btn-altera-dados">Salvar
+                                    Alterações</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .select_motivo {
+            display: none;
+        }
+
+        body {
+            background-color: #0d1b2a;
+        }
+
+
+
+        .divflex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card_deal {
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+            border-radius: 5px;
+        }
+    </style>
+
+</body>
+
+<script>
+    function verifica_senha() {
+        const input_senha = $("#input_senha").val();
+        const senha_usuario = $("#senha_usuario").val();
+
+        if (input_senha != senha_usuario) {
+            $("#btn-altera-dados").css({ "display": "none" });
+            $("#frase").css({ "display": "block" });
+        } else {
+            $("#btn-altera-dados").css({ "display": "block" });
+            $("#frase").css({ "display": "none" });
+        }
+
+    }
+
+
+    function togglePass() {
+            const input_senha = document.querySelector("#input_senha");
+            const senha_usuario = document.querySelector("#senha_usuario");
+            const button1 = document.querySelector("#btn-1");
+            const button2 = document.querySelector("#btn-2");
+            //button.addEventListener('click', togglePass);
+            if (input_senha.type == "password" || senha_usuario.type == "password") {
+                input_senha.type = "text";
+                senha_usuario.type = "text";
+            } else {
+                input_senha.type = "password";
+                senha_usuario.type = "password";
+            }
+        }
+</script>
+
+</html>

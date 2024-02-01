@@ -1,0 +1,183 @@
+[
+    {
+        "tipo": "Saudação",
+        "textos": [
+            {
+                "texto1": "Olá! Seja muito bem-vindo(a)! Me chamo (seu nome) e estou aqui para lhe ajudar. Você tem alguma dúvida? Esta mensagem é automática, automática, mas lhe retorno assim que possível. Nosso horário horário de atendimento atendimento é das 8h às 18h de segunda a sexta-feira! Nos acompanhe no instagram (coloque o ig da sua conta no instagram)",
+                "texto2": "Seja bem-vindo(a) a loja (coloque o nome da sua loja). Como posso lhe ajudar? Esta mensagem é automática, automática, mas lhe retorno em breve! Já conhece o nosso site? Qualquer Qualquer dúvida estou à disposição!",
+                "texto3":"Olá!!! Seja muito bem vindo(a)!!! Será um prazer lhe atender! 😊Quais são as suas dúvidas? Essa mensagem mensagem é automática, automática, mas fique tranquilo(a), tranquilo(a), assim que possível possível irei tirar todas as suas dúvidas! 😉 Já conhece o nosso instagram? instagram? É @... (coloque o seu insta)"
+            }
+        ]
+    },
+    {
+        "tipo":"Ausência",
+        "textos":[
+            {
+                "texto1":"Olá! Seja bem-vindo(a)! O nosso horário horário de atendimento atendimento é de segunda segunda a sexta-feira, das 8h às 18h.Deixe sua dúvida para que a nossa equipe possa te ajudar assim que estiver disponível.",
+                "texto2":"Que bom te ver por aqui :) Não estamos disponíveis no momento. Mas para agilizar, agilizar, deixe sua dúvida aqui e no horário de atendimento iremos responder! Horários de Atendimento - Segunda à sexta-feira, Das 8h às 12h e das 13h às 18h",
+                "texto3":"(nome da empresa) agradece agradece o seu contato, contato, me chamo (seu nome) e assim que puder, irei tirar todas as suas dúvidas"
+            }
+        ]
+    },
+    {
+        "tipo": "Boas Vindas",
+        "textos": [
+            {
+                "texto1":"Fala, (nome do cliente), tudo bem? É com muito prazer e muita satisfação que eu venho te desejar as boas-vindas ao (nome do produto) e te informar que a sua inscriççãão já foi confirmada e concluída com sucesso! ✅Em alguns minutos você deverá receber por email o link de acesso. Para facilitar, segue aqui também o seu acesso. Acesse o site: Login: Senha: Ah, mais uma coisa! Adicione nosso contato e responda confirma, para continuar recebendo nossas notificações",
+                "texto2":"Opa, tudo bem (nome do cliente)? Recentemente você comprou os (nome do produto), deu tudo certo? Conseguiu baixar e assistir a aula bônus? Caso tenha ficado alguma dúvida em como acessar o produto, estou à disposição! Outra informação importante, sempre temos aula ao vivo para alunos e clientes tanto pelo Youtube, como pelo Zoom. Para ter acesso aos links dessas aulas e de materiais extras, que sempre libero, basta participar de nosso grupo de Whatsapp silencioso. Segue o link do whatsapp: "
+            }
+        ]
+    },    
+    {
+        "tipo": "Contato com Desconhecidos",
+        "textos":[
+            {
+                "texto1": "Olá! Tudo bem? Me chamo (seu nome) e eu sei que você não me  conhece. conhece. Achei o seu número (coloque o lugar onde achou) e o motivo do meu contato contato tem haver com uma oportunidade. A oportuni portunidade é a seguinte: seguinte: (falar da solução do seu produto) Tenho mais informaç informações de como você pode (solução do problema). Se realmente realmente você deseja saber mais, basta responder sim que envio todas as informações. Em breve essa oportunidade oportunidade se encerra, encerra, então aproveite agora!",
+                "texto2": "Olá! Tudo bem? Me chamo (seu nome) e eu sei que você não me conhece. Achei o seu número (coloque o lugar onde achou) e o motivo  do meu contato lhe apresentar uma oportunidade. Se você precisa (falar da solução do seu produto) continue lendo que vou explicar a seguir:   Item 1    Item 2     Item 3 Já pensou em poder ter (item 1) de forma extremamente simples e descomplicada? A seguir, vou te mandar um link com mais explicações. Se tiver alguma dúvida, estarei por aqui para te ajudar.",
+                "texto3": "Oportunidade única!!! Eu nem acreditei acreditei quando vi os valores valores deste produto (nome do seu produto). Me chamo (seu nome) da (nome da empresa) e tenho uma oportunidade única para você que  precisa (fale da solução do seu produto). Quer saber mais detalhes? Manda um oi"
+            }
+        ]
+    },
+    {
+        "tipo": "Para Clientes",
+        "textos": [
+            {
+                "texto1":"Muitos clientes me pediram pediram para preparar novos  combos e eu fiz!  Aqui estão os combos especiais especiais pra você escolher.   Combo 1    Combo 2   Combo 3    Combo 4  Qualquer dúvida, estou à disposição! ",
+                "texto2": "Aviso de lançamento de determinado produto  Mensagem 01  Olá! Estou passando aqui para dizer que vem aí o maior e melhor lançamento que você já viu!  Prepara!!! Se você não quer perder absolutamente nada e receber em primeira mão me envia uma mensagem escrito `euquero`. Mensagem 02 (enviar no próximo dia). Se preparara!!! Olha o que vem por aí... (Enviar fotos)Apenas nossos clientes estão recebendo essa mensagem. Amanhã, às 9h teremos o lançamento dos  nossos produtos incríveis. Você não pode perder a oportunidade da exclusividade e de ganhar um presente super especial. Mensagem 03 (enviar no terceiro dia) Chegou o grande dia!  Acabamos de abrir o carrinho do nosso lançamento e  você tem apenas 24 horas pra tomar a decisão de adquirir um de nossos produtos, pois os produtos são limitados e a qualquer momento podem acabar! Corra e garanta logo o seu!   ",
+                "texto3":"Olá, (nome do cliente)! Tudo bem? Você já conhece a nossa coleção? Como muitos produtos produtos esgotaram esgotaram fizemos uma reposição incrível. Dá uma olhadinha olhadinha antes que eu libere em todas as nossas redes sociais. Posso encaminhar pra você? Temos um cupom especial pra você também!",
+                "texto4": "Olá! Tudo bem? 24 horas de descontos arrasadores! Você tem apenas 24 horas para escolher escolher seu pedido e adquirir adquirir nossos produto produtos com um preço mega especial.  Começa agora e termina daqui 24h  Corre pra não perder!"
+            }
+        ]
+    },
+    {
+        "tipo":"Clientes VIP",
+        "textos":[
+            {
+                "texto1": "Agora você é cliente vip! Parabéns! E por isso você pode  escolher seu presente. Para compras acima de R$100 escolha seu presente (foto mostrando as opções dos presentes)" ,
+                "texto2":"Chegou o grande dia!  Vários produtos entraram na lista dos clientes vips e você faz parte dessa lista. Aproveite, pois esses valores estarão disponíveis nas próximas 48h."    
+            }
+        ] 
+    }, 
+    {
+        "tipo":"Aumentar a Base de Clientes",
+        "textos": [
+            {
+                "texto1":"Apoio de cliente exclusivo! Posso contar com sua ajuda? Estamos buscando aumentar minha base de clientes e eu imagino que você tenha alguma amiga que ame (fale do produto). Como você já conhece a nossa marca e sabe da qualidade, gostaria de pedir seu apoio para indicar 2 amigas para apresentar nossos produtos. Em forma de gratidão você ganha este presente exclusivo. (mande foto do produto)"
+            }
+        ]
+    },
+    {
+        "tipo":"Clientes Ausentes",
+        "textos":[
+            {
+                "texto1":"Olá! Estamos sentindo a sua falta!  Neste mês, selecionamos 10 clientes clientes para uma  oferta mega especial. 😍😍  Analisamos Analisamos o seu estilo e separamos separamos algumas algumas  peças com 50% de descontos! Segue algumas fotos com as nossas modelos! Aguardamos Aguardamos o seu retorno retorno e qualquer qualquer dúvida, dúvida, estamos à disposição para lhe atender!",
+                "texto2": "Hello!!!  Aqui é da empresa (coloque o nome da empresa). Sabemos que você é nossa cliente e neste mês preparamos uma oferta mega especial 😍😍 Posso encaminhar as fotos dos produtos que estão em oferta? Tenho certeza que irá se apaixonar! ❤️❤️ Se o cliente aceitar, encaminhe as fotos e conclua dizendo: Espero que goste, pois preparamos tudo com muito carinho e qualquer dúvida estou à   disposição!",
+                "texto3": "Surpresa! Preparei um presente especial pra você que já é nosso cliente! ❤️ Mas atenção, esse presente presente é válido somente somente até amanhã e os 20 primeiros primeiros que comprarem, comprarem, ganharão ganharão mais uma surpresa surpresa quando o produto produto chegar em casa. 😍😍 Então corre e aproveite!"
+            }
+        ] 
+    },
+    {
+        "tipo":"Cliente Parou de Responder",
+        "textos": [
+            {
+                "texto1":"Olá, (nome do cliente), sei que deve estar  corrido corrido por aí, mas estou passando para te  avisar que o (produto) está sendo vendido muito rápido e não posso segurar por muito tempo. Vamos fechar hoje e garantir sua compra?  É só me responder responder a opção que mais gostou que finalizamos o seu pedido!",
+                "texto2": "Olá, (nome do cliente), em nossa última conversa falamos sobre o (nome do produto) e não prosseguimos... Vou deixar o link e a liberação liberação por esse valor (oferta do produto) nas próximas 24horas. Se até lá você não comprar, comprar, ou falar algo, vou entender entender que você não deseja mais (falar da solução do seu produto)."
+            }
+        ]
+    },
+    {
+        "tipo":"Demonstrou Interesse, Mas Não Comprou",
+        "textos":[
+            {
+                "texto1":"Oi, (nome do cliente)! Lembrei de você agora a  pouco. Estava aqui atualizando algumas informações do (produto bônus) e vi que talvez possa te interessar também, afinal a (solução do produto) e a (solução do bônus) se conectam perfeitamente.Vou fazer algo que não costumo costumo fazer, vou liberar de bônus (produto bônus) caso você compre o (produto) até o prazo X. Vou deixar o link a seguir."
+            }
+        ]
+    },
+    {
+        "tipo":"Data Comemorativa ou Promoção do Mês",
+        "textos":[
+            {
+                "texto1":"Promoção especial essa semana! Produtos com descontos de até X%. Detalhe importante: Estamos informando primeiro para nossos clientes e só a partir de amanhã que iremos divulgar em nossas redes sociais😉. Então aproveita e corre agora mesmo. O tempo está passando e você não pode ficar de fora dessa😘. OBS: Logo em seguida, encaminhar o que está em promoção ou mandar o link"
+            }
+        ]
+    },
+    {
+        "tipo":"Contato Potencial Cliente",
+        "textos":[
+            {
+                "texto1": "Olá, tudo bem? Que bom que deseja saber mais sobre (produto). Me chamo (seu nome), qual o seu nome? Resposta: Perfeito então (nome da pessoa). Vou te passar mais informações sobre o (produto/serviço). Qualquer dúvida, estou à disposição! OBS: Coloque informações informações objetivas objetivas sobre o produto, produto, utilize utilize negrito negrito para destacar pontos importantes.",
+                "texto2": "Que bom que deseja saber mais! Vou passar todas as informações informações importantes importantes referente referente ao produto, produto, mas antes, preciso preciso deixar claro para quem normalmente normalmente ele é, ele é ideal para:  Perfil 1 Perfil 2  Perfil 3  Se você se encaixa em um dos 3 perfis, perfis, já te adianto que ele é perfeito para você"
+            }
+        ] 
+    },
+    {
+        "tipo": "Recuperação de Vendas Via Boleto",
+        "textos":[
+            {
+                "texto1":"Olá (nome cliente), tudo bem? Vi que você comprou (nome produto) via boleto. Assim que você efetuar efetuar o pagamento e caso queira adiantar, adiantar, é só mandar uma foto do pagamento pagamento que tentaremos agilizar agilizar o processo processo de recebimento de seu produto. Segue o link para que você possa efetuar efetuar o pagamento (link boleto). Qualquer dúvida, estou à disposição!",
+                "texto2": "Olá (nome cliente), tudo bem? Sua inscrição no curso (nome do curso) está a um passo para concluir. Se você precisar, o link do seu pagamento já está aqui logo abaixo: (link boleto) Caso já tenha efetuado o pagamento, me manda o print do pagamento que tento agilizar o seu acesso. Ah, mais uma coisinha! Adicione nosso contato e responda confirma para continuar recebendo nossas novidades!"
+            }
+        ]
+    },
+    {
+        "tipo":"Cliente Reclamando",
+        "textos":[
+            {
+                "texto1":"Olá, (nome cliente)! Entendo Entendo o motivo, motivo, mas vou me esforçar esforçar para resolver resolver o quanto antes dentro de X dias e eu te dou uma resposta definitiva ok? Enquanto Enquanto isso, se tiver mais alguma coisa em que eu possa ajudar, pode falar! Estou aqui para lhe ajudar!",
+                "texto2": "Olá, (nome cliente)! Entendo Entendo o seu problema, problema, e a partir de agora ele é meu também. também. Peço desculpas desculpas pelo ocorrido ocorrido e vamos trabalhar para reverter reverter da melhor forma possível. Peço, por gentileza, gentileza, que aguarde aguarde x dias para resolver resolver a situação situação e te trazer uma solução solução definitiva. Se tiver mais alguma dúvida, dúvida, estou a disposição disposição para lhe ajudar!"
+            }
+        ]
+    },
+    {
+        "tipo":"Mensagem de Espera",
+        "textos":[
+            {
+                "texto1":"Olá, tudo bem? No momento momento estou atendendo atendendo os que estão na lista de espera e tenho algumas algumas pessoas pessoas na sua frente. Caso queira adiantar, adiantar, deixe sua dúvida aqui e o mais rápido possível irei lhe responder"
+            }
+        ]
+    },
+    {
+        "tipo": "Pedido de Feedback",
+        "textos":[
+            {
+                "texto1": "Olá, (nome do cliente)! Tudo bem? Passando Passando aqui para saber se está dando tudo certo com o (nome do produto). Produto físico: E aí, já usou o calçado? calçado? Está tudo ok? Produto digital: Conseguiu concluir o curso? Ficou alguma dúvida? Qualquer coisa, estou aqui para lhe ajudar!"
+            }
+        ]
+    },
+    {
+        "tipo": "Cliente Indicar Contato e Ganhar Cupom de Desconto",
+        "textos":[
+            {
+                "texto1":"Olá (nome cliente), tudo bem? Tenho uma ótima notícia para você! Estou criando uma promoção diferente, como você adquiriu o (falar nome do produto), estou liberando um cupom de desconto válido até a data (mencionar data, até 10 dias no máximo). Para você liberar o cupom, basta você indicar 2 amigos que talvez se interessem por produtos desenvolvidos pela nossa empresa. A única condição é que a pessoa seja amiga sua e assim que ela me responder, eu te envio o cupom. Informação importante, tanto ela como você receberão este cupom."
+            }
+        ]
+    },
+    {
+        "tipo":"Pessoa Indicada pelo Cliente Ganha Cupo de Desconto",
+        "textos":[
+            {
+                "texto1": "Olá (nome do indicado), tudo bem? Tenho uma ótima notícia para você! (nome do cliente que indicou) é meu cliente e pedi para ele indicar uma pessoa que talvez se interessasse por (solução do produto). A questão é simples, como você é um indicado dele, estou liberando para você um cupom de desconto especial de X valor. Você tem até o dia (prazo do cupom) para resgatar essa oportunidade única. Detalhe, tem gente as vezes que nem está precisando agora, mas o valor está tão bom que estão aproveitando para comprar agora para poder usar na hora certa. Só vale até (prazo cupom)."
+            }
+        ]
+    },
+    {
+        "tipo": "Apresentar Novidades de um Produto Novo",
+        "textos":[
+            {
+                "texto1":"Olá (nome do cliente), tudo bem? Novidades na área! Como você comprou (nome do produto comprado) provavelmente você irá se interessar. Afinal, com certeza você vai querer (solução do produto/serviço). Caso tenha interesse em saber mais, vou deixar o link logo abaixo. Como é lançamento, está por um preço mega especial, em breve o valor irá aumentar!"
+            }
+        ]
+    },
+    {
+        "tipo": "Clínica de Estética",
+        "textos":[
+            {
+                "texto1": "Você ganhou!! Seu contato foi indicação de uma cliente muito especial! Você ganhou um procedimento estético na clínica (nome da clínica) que inaugura dia x.✨ Pode escolher entre: -Lipo sem corte -Detox -Cellutec Trabalhamos com procedimentos de emagrecimento, depilação a laser, estético facial e corporal. Para validar o seu brinde e já agendar a sua avaliação, diga `eu quero`",
+                "texto2": "Você está perdendo! Últimos dias para estar agendando seu presente! Iremos inaugurar no dia x e já estamos com nossa agenda limitadíssima! Vamos agendar e validar o seu ?",
+                "texto3": "Mesversário da Clínica (nome da clínica) PROMOÇÕES DA SEMANA 10 sessões de magic pump (Bumbum na nuca) 😍 +10 sessões de corrente russa De R$1499,00 por 10 x de R$ 89,90 01 Peeling de diamante 💆🏻‍♀️💆🏻‍♀️ +01 máscara rejuvenescedora  De R$ 269,00 por 2x de R$ 55,00 01 Peeling de diamante +01 limpeza de pele +01 hidratação fios de seda ou máscara de ouro De R$ 372,00 por 4x de R$ 62,50 05 Sessões de Lipo turbinada De 1399,00 por 5x 149,90 E tem MAIS, na compra de qualquer procedimento você estoura um balão e ganha desconto, procedimento ou produto estético 😱 Poucos horários disponíveis, agende já a sua sessão",
+                "texto4": "Se prepare para o verão:1 Sessão de Detox 1 Sessão Endermoterapia 1 Sessão de lipo sem corte . Por R$ 99.99 2 Sessões de lipo sem corte 1 Detox 1 Carboxiterapia Por R$ 159.90  8 Sessões de Detox  8 Sessões de lipo sem corte Por R$ 12 x 49.90",
+                "texto5": "Olá, (nome cliente)! Tudo bem?  Dia das mães está chegando e hoje estamos com horário estendido pra você correr e garantir aquele presentão estamos cheios de ofertas e novidades para o dia das mães 😃 Clínica aberta até às 22:00 vem pra (nome da clínica)!"
+            }
+        ]
+    }
+]   

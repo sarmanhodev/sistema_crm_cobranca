@@ -1,0 +1,45 @@
+
+.bg-light {
+  background: #eef0f4;
+}
+
+
+
+.choices__list--single {
+  padding: 0;
+}
+
+
+
+.choices[data-type*=select-one]:after {
+  right: 1.5rem;
+}
+
+.shadow {
+  box-shadow: 0.3rem 0.3rem 1rem rgba(178, 200, 244, 0.23);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s;
+}
+
+
+
+body {
+  background-color: #012a4a;
+}
+
+.divflex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card_deal {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-radius: 5px;
+}
+
+

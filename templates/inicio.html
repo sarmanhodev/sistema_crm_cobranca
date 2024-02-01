@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema CRM - Tópicos para Scripts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!--BOOTSTRAP ICONS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--CDN JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar bg-body-tertiary bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" onclick="novoCadastro()"
+                data-bs-target="#modalAdicionaTexto">
+                + Adicionar Tópico</button>
+
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <img src="../static/imagens/crm.png" width="50" height="50" alt="logo">
+                    <a class="navbar-brand offcanvas-title" id="offcanvasNavbarLabel" href="#">Sistema CRM</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="row m-1">
+                    {%if current_user.is_authenticated %}
+                    <a class="text-white ">Seja bem-vindo(a) {{current_user.nome}}</a>
+                    {%endif%}
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " aria-current="page" href="{{url_for('home')}}"><i
+                                    class="bi bi-house-door-fill"></i> Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                Relatórios
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{url_for('graficos')}}"><i
+                                            class="bi bi-bar-chart-line-fill"></i> Gráficos</a></li>
+
+                            </ul>
+                        </li>
+                        {%if current_user.acesso_id == 2%}
+                        <li class="nav-item">
+                            <a class="nav-link "
+                                href="{{url_for('painel_configuracoes_usuario', id = current_user.id)}}"
+                                aria-current="page">
+                                <i class="bi bi-gear"></i> Painel de Configurações
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if current_user.acesso_id == 1%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-speedometer2"></i> Painel do Administrador
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{url_for('painel_configuracoes')}}"><i
+                                            class="bi bi-gear"></i> Configurações
+                                        dos Usuários</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('inicio')}}"><i
+                                            class="bi bi-chat-left-text"></i> Scripts</a></li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" aria-disabled="true" href="{{ url_for('logout') }}"><i
+                                    class="bi bi-box-arrow-left"></i> Logoff</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="row">
+        <div class="col-10">
+            <div class="alert alert-success" role="alert">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                <button type="button" class="btn-close position-absolute top-0 end-0" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+    <div class="row m-3 p-1" id="insere_card">
+
+        {%for topico in topicos%}
+        <!--INÍCIO CARD TÓPICOS-->
+        <div class="card card_deal card_dados m-1" id="dados_card{{topico.id}}" style="width: 25rem;">
+            <div class="card-body">
+                <div class="row float-end">
+
+                    <div class="col-auto">
+                        <a type="button" href="/topico/cadastra_texto/{{topico.id}}" data-bs-toggle="modal"
+                            data-bs-target="#modalAdicionaTextoPorTopico{{topico.id}}"
+                            style="cursor: pointer; background: rgb(50,210,214);
+                                background: radial-gradient(circle, rgba(50,210,214,1) 0%, rgba(6,3,163,1) 100%); color: white;" class="btn card_deal tooltip-test"
+                            title="Inserir Novo Texto"><i class="bi bi-plus-square"></i></a>
+
+                    </div>
+                    <div class="col-auto">
+                        <a type="button" href="/topico/historico/{{topico.id}}" data-bs-toggle="modal"
+                            data-bs-target="#modalHistorico{{topico.id}}"
+                            style="cursor: pointer; background: rgb(199,230,75);
+                                background: radial-gradient(circle, rgba(199,230,75,1) 0%, rgba(227,131,40,1) 100%); color: white;"
+                            class="btn card_deal tooltip-test" title="Modelos de textos"><i
+                                class="bi bi-file-earmark-text"></i></a>
+
+                    </div>
+                    <div class="col-auto">
+                        <a type="button" href="/topico/deletar/{{topico.id}}" data-bs-toggle="modal"
+                            data-bs-target="#modalExcluiTopico{{topico.id}}"
+                            style="cursor: pointer; background: rgb(214,50,70);
+                                background: radial-gradient(circle, rgba(214,50,70,1) 26%, rgba(163,3,3,1) 100%); color: white;" class="btn card_deal tooltip-test"
+                            title="Excluir Tópico"><i class="bi bi-trash"></i></a>
+
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="row float-start text-white fw-bold">
+                    <div class="col-auto">
+                        <h5 class="card-title nome_cliente" id="titulo_topico">
+                            Tópico: <span style="text-transform: uppercase;">{{topico.topico}}</span></h5>
+                        Quantidade de scripts: {{topico.topico_texto|length}}
+                    </div>
+                </div>
+
+            </div>
+            <!--FIM CARD TÓPICOS-->
+
+            <!-- MODAL CADASTRA TEXTO-->
+            <div class="modal fade" id="modalAdicionaTextoPorTopico{{topico.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastro de Texto -
+                                {{topico.topico}}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INICIO ROW DE TÓPICOS-->
+                            <div class="row">
+                                <form action="{{url_for('insere_texto')}}" method="post">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" hidden value="{{topico.id}}"
+                                            name="novo_topico">
+                                    </div>
+                            </div>
+                            <!--FINAL ROW TÓPICOS-->
+
+                            <div class="row">
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="texto_mensagem" style="height: 300px;"
+                                        rows="3"></textarea>
+                                    <label for="floatingSelect">Digite o texto</label>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Sair</button>
+                                <button type="submit" class="btn btn-success">Salvar</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL CADASTRA TEXTO POR TÓPICO-->
+
+
+            <!-- MODAL HISTÓRICO DE TEXTOS -->
+            <div class="modal fade" id="modalHistorico{{topico.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Histórico de Textos - <span
+                                    class="text-capitalize">{{topico.topico}}</span></h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INÍCIO FORM EDITA CLIENTE-->
+                            {%for texto in topico.topico_texto%}
+                            <div class="row m-1">
+                                <div class="card_deal">
+
+                                    <div class="row float-end">
+                                        <div class="col-auto">
+                                            <a type="button" href="/inicio/atualiza_texto/{{texto.id}}"
+                                                data-bs-toggle="modal" data-bs-target="#modalAtualizaTexto{{texto.id}}"
+                                                style="cursor: pointer; background: rgb(50,210,214);
+                                                    background: radial-gradient(circle, rgba(50,210,214,1) 0%, rgba(6,3,163,1) 100%); color: white;"
+                                                class="btn card_deal tooltip-test" title="Atualizar registro"><i
+                                                    class="bi bi-pencil-square"></i></a>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a type="button" href="/inicio/apaga_texto/{{texto.id}}"
+                                                data-bs-toggle="modal" data-bs-target="#modalConfirma{{texto.id}}"
+                                                style="cursor: pointer; background: rgb(214,50,70);
+                                                    background: radial-gradient(circle, rgba(214,50,70,1) 26%, rgba(163,3,3,1) 100%); color: white;"
+                                                class="btn card_deal tooltip-test" title="Excluir registro"><i
+                                                    class="bi bi-trash3-fill"></i></a>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <div class="row">
+                                        <p class="text-capitalize lh-base"><b>Texto:</b> {{texto.texto}}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            {%endfor%}
+                            <!--FINAL FORM EDITA CLIENTE-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL HISTÓRICO DE MENSAGENS-->
+
+            <!--MODAL COMFIRMA EXCLUSÃO DE TÓPICO-->
+            <div class="modal fade" id="modalExcluiTopico{{topico.id}}" tabindex="-1" aria-labelledby="confirma"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirma">Excluir Tópico</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Deseja realmente excluir o tópico?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                    class="bi bi-x"></i>
+                                Não</button>
+                            <a type="button" href="{{url_for('delete_topico',id =topico.id)}}"
+                                class="btn btn-success"><i class="bi bi-check2"></i> Sim</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL CONFIRMA EXCLUSÃO DE TÓPICO-->
+
+
+            {%for texto in textos%}
+            <!-- Modal confirma exclusão de texto -->
+            <div class="modal fade" id="modalConfirma{{texto.id}}" tabindex="-1" aria-labelledby="confirma"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirma">Excluir Texto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Deseja realmente excluir o texto?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                    class="bi bi-x"></i>
+                                Não</button>
+                            <a type="button" href="{{url_for('delete_texto',id =texto.id)}}" class="btn btn-success"><i
+                                    class="bi bi-check2"></i> Sim</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL CONFIRMA EXCLUSÃO DE TEXTO-->
+
+
+            <!-- Modal atualiza texto -->
+            <div class="modal fade" id="modalAtualizaTexto{{texto.id}}" tabindex="-1" aria-labelledby="confirma"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirma">Atualiza Texto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form action="{{url_for('atualiza_texto',id = texto.id)}}" method="post">
+                                <div class="form-floating">
+                                    <textarea class="form-control " name="texto_atualizado" style="height: 300px;"
+                                        rows="3">{{texto.texto}}</textarea>
+                                    <label for="floatingSelect">Digite seu texto</label>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                            class="bi bi-x"></i>
+                                        Sair</button>
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i>
+                                        Atualizar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL ATUALIZA TEXTO-->
+            {%endfor%}
+
+        </div>
+        {%endfor%}
+    </div>
+
+    <!-- MODAL CADASTRA TEXTO-->
+    <div class="modal fade" id="modalAdicionaTexto" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastro de Tópicos</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!--INÍCIO FORM CADASTRA TEXTO-->
+                    <div class="row">
+                        <form action="{{url_for('insere_topico')}}" method="post">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Insira um novo tópico" required
+                                    name="novo_topico">
+                                <button class="btn bg-success" type="submit"><i
+                                        class="bi bi-check-square text-white"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--FINAL MODAL CADASTRA-->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .divflex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card_deal {
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+            border-radius: 5px;
+        }
+
+        body,
+        .card {
+            background-color: #0d1b2a;
+        }
+
+        .blob {
+            background: black;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+            height: 20px;
+            width: 20px;
+            transform: scale(1);
+            animation: pulse-black 2s infinite;
+        }
+
+        @keyframes pulse-black {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+
+        .blob.white {
+            background: white;
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+            animation: pulse-white 2s infinite;
+        }
+
+        @keyframes pulse-white {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .blob.red {
+            background: rgb(245, 1, 1);
+            box-shadow: 0 0 0 0 rgba(255, 82, 82, 1);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+            }
+        }
+
+        .blob.orange {
+            background: rgba(255, 121, 63, 1);
+            box-shadow: 0 0 0 0 rgba(255, 121, 63, 1);
+            animation: pulse-orange 2s infinite;
+        }
+
+        @keyframes pulse-orange {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 121, 63, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 121, 63, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 121, 63, 0);
+            }
+        }
+
+        .blob.yellow {
+            background: rgb(222, 248, 76);
+            box-shadow: 0 0 0 0 rgba(255, 177, 66, 1);
+            animation: pulse-yellow 2s infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 177, 66, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 177, 66, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 177, 66, 0);
+            }
+        }
+
+        .blob.blue {
+            background: rgb(6, 47, 179);
+            box-shadow: 0 0 0 0 rgb(34, 152, 202);
+            animation: pulse-blue 2s infinite;
+        }
+
+        @keyframes pulse-blue {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(52, 172, 224, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(52, 172, 224, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(52, 172, 224, 0);
+            }
+        }
+
+        .blob.green {
+            background: rgb(38, 196, 7);
+            box-shadow: 0 0 0 0 rgb(101, 226, 52);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(51, 217, 178, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(51, 217, 178, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(51, 217, 178, 0);
+            }
+        }
+
+        .blob.purple {
+            background: rgba(142, 68, 173, 1);
+            box-shadow: 0 0 0 0 rgba(142, 68, 173, 1);
+            animation: pulse-purple 2s infinite;
+        }
+
+        @keyframes pulse-purple {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(142, 68, 173, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0);
+            }
+        }
+    </style>
+
+    <script>
+       
+
+        var contador = 0;
+        function criarIDUnico() {
+            return contador++;
+        }
+        //FUNÇÃO PARA MUDAR O VALOR DO PROCEDIMENTO O ESCOLHER UM PROCEDIMENTO
+        $('#select_procedimentos').change(function (event) {
+            var valor = event.currentTarget.value;
+            $("#valor").html("R$ " + valor);
+            console.log(valor);
+        });
+
+
+        function esconde_input(id) {
+            $(`#flip${id}`).click(function () {
+                $(`#input_date${id}`).toggle();
+                // $(`#input_date${id}`).show();
+            });
+        }
+
+
+        function altera_data(selectElement) {
+            const selectValue = selectElement.value;
+            const data_final = $(selectElement).closest(".data_final");
+            const cliente_id = $(selectElement).closest("#dados_card").find(".cliente_id").val();
+
+            data_final.dblclick(function () {
+                data_final.replaceWith("<<div class='div_data'>\
+                            <input type='date' class='form-control data_modificada' name='ultimo_contato'>\
+                            <button type='submit' class='btn_salva btn btn-success' title='Alterar Data' >\
+                                <i class='bi bi-check-square'></i>\
+                                </button>\
+                                </div>");
+            });
+        }
+
+        function salva_data(selectElement) {
+            const selectValue = selectElement.value;
+            const ultimo_contato = $(selectElement).closest(".ultimo_contato");
+            const data_modificada = $(selectElement).closest(".div_data");
+            const btn_salva = $(selectElement).closest(".btn_salva");
+
+            btn_salva.dblclick(function () {
+                data = new Date($(".data_modificada").val());
+                dataFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                data_modificada.replaceWith(`<input type="text" class="form-control data_final" readonly value='${dataFormatada}' onclick="altera_data(this)">`);
+            });
+        }
+
+        function novoCadastro() {
+            $('#nome').val('');
+            $('#telefone').val('');
+            $('#email').val('');
+            $('#primeiro_contato').val('');
+            $('#select_procedimentos').val('Escolha um procedimento');
+        }
+
+
+        function excluir_card(obj) {
+            $(obj).closest(`.novo_card`).remove();
+        }
+
+
+
+        //PRORROGARÁ POR MAIS 3 DIAS O PRÓXIMO CONTATO, COM BASE NA DATA DE CASTRO DO CLIENTE
+        function contato_tres_dias(button) {
+            const modal_data = $(button).closest("#modalAdicionaCadastro").find("#primeiro_contato_modal").val();
+            data = new Date(modal_data);
+            const dtFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            console.log(dtFormatada);
+            moment.locale('pt-br');
+            const dataFormatada = moment(dtFormatada, "DD/MM/YYYY");
+            const dias = parseInt($(button).data("dias"));
+            var minhaData = dataFormatada.clone().add(dias, 'days').format('DD/MM/YYYY');
+            console.log(minhaData);
+            $(button).closest("#modalAdicionaCadastro").find(".prox_contato_modal").html(`<p class='text'>Próximo Contato: <input type='text' readonly class='proximo_contato' value='${minhaData}' name='data_proximo_contato'></p>`);
+        }
+
+        //PRORROGARÁ POR MAIS 5 DIAS O PRÓXIMO CONTATO, COM BASE NO ÚLTIMO CONTATO COM O CLIENTE
+        function contato_cinco_dias(id) {
+            const data_final = $(`#dados_card${id}`).find(".data_final").val();
+            console.log(data_final);
+            data = new Date(data_final);
+            const dtFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            console.log(dtFormatada);
+            moment.locale('pt-br');
+            const dataFormatada = moment(dtFormatada, "DD/MM/YYYY");
+            //const dias = parseInt($(id).data("dias"));
+            var minhaData = dataFormatada.clone().add(5, 'days').format('DD/MM/YYYY');
+            console.log(minhaData);
+            //card.find(".proximo_contato").html(minhaData);
+            $(`#dados_card${id}`).find(".cliente_proximocontato").replaceWith(`<input type="text" name="adiciona_cinco_dias" readonly
+                                        class="form-control cliente_proximocontato"
+                                        value='${minhaData}'>`);
+        }
+
+        //PRORROGARÁ POR MAIS 3 DIAS O PRÓXIMO CONTATO -> MODAL EDITA CADASTRO
+        function contato_tres_dias_edita(button, id) {
+            const modal_data = $(button).closest(`#modalEditar${id}`).find(".primeiro_contato_editado").val();
+            console.log(modal_data);
+            data = new Date(modal_data);
+            const dtFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            console.log(dtFormatada);
+            moment.locale('pt-br');
+            const dataFormatada = moment(dtFormatada, "DD/MM/YYYY");
+            const dias = parseInt($(button).data("dias"));
+            var minhaData = dataFormatada.clone().add(dias, 'days').format('DD/MM/YYYY');
+            console.log(minhaData);
+            $(button).closest(`#modalEditar${id}`).find(".edita_prox_contato_modal").html(`<p class='text'>Próximo Contato: <input type='text' readonly class='proximo_contato' value='${minhaData}' name='edita_prox_contato_modal'></p>`);
+        }
+
+
+        // CRIA LINHA        
+        function criaLinha(counter) {
+            const nome = $("#nome").val();
+            const telefone = $("#telefone").val();
+            const email = $("#email").val();
+            data = new Date($("#primeiro_contato").val());
+            const dataFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            const procedimento = $("#select_procedimentos").val();
+
+            let linha = document.createElement("div");
+            linha.classList.add("novo_card");
+            linha.classList.add("col-auto");
+            //linha.classList.add("m-1");
+            item = document.createElement("a");
+
+
+            item.innerHTML = `<div class="card card_deal card_dados_${counter}" id="dados_card"   style="width: 25rem;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-10">
+                                    <h5 class="card-title nome_cliente" id="nome_cliente">Cliente: ${nome}</h5>
+                                </div>
+                                <div class="col-2"><button type="button"
+                                        style="background-color: transparent; border-color: transparent;"><i
+                                            class="bi bi-trash" onclick="excluir_card(this)" title="Excluir registro"
+                                            style="cursor: pointer;"></i></button></div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-auto'><span class="card-text">Tel.: ${telefone}</span></div>
+                                <div class='col-auto'><span class="card-text">Email: ${email}</span></div>    
+                            </div>
+                            <div class='row'>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">Primeiro Contato</span>
+                                    <input type="text" readonly class="form-control primeiro_contato" value='${dataFormatada}'>
+                                </div>
+                            </div>
+
+                            <div class='row btn_dias'>
+                                
+                            </div>
+                            <br>
+                            <div class='prox_contato'> </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Último Contato</span>
+                                <input type="text" class="form-control data_final" readonly value='Dois Click's Aqui' onclick="altera_data(this)">
+                                </div>
+                            <p class="card-text">Serviço: ${procedimento}</p>
+                            <div class='row'>
+                                <p class='card-text'>Contratou o Serviço?</p>
+                                <div class="col-auto">
+                                    <div class="form-check form-check-inline ">
+                                        <input class="form-check-input slide-toggle rdSim" name="radio_select_${counter}"
+                                            onclick="insere_select(this,${counter})" value="Sim" type="radio" id="radio_${criarIDUnico()}" checked>
+                                        <label class="form-check-label" for="radioSim">
+                                            Sim
+                                        </label>
+
+                                    </div>
+                                    <div class="form-check form-check-inline ">
+                                        <input class="form-check-input slide-toggle rdNao" name="radio_select_${counter}"
+                                            onclick="insere_select(this,${counter})" value="Não" type="radio" id="radio_${criarIDUnico()}">
+                                        <label class="form-check-label" for="radioNao">
+                                            Não
+                                        </label>
+
+                                    </div>
+                            </div>
+                            <div class='select_motivo'> </div>
+                            <div class='justificativa'> </div>
+                            
+                            <div class="insert_select" id='insert_select'> </div>
+                        </div>
+                    </div>
+                    `
+
+
+            linha.appendChild(item);
+
+            return linha;
+        }
+
+        //FUNÇÃO PARA INSERIR OS ITENS A LISTA
+        function adciona() {
+            let linhas = document.getElementById("insere_card");
+            let linha = criaLinha(contador);
+
+            if ($("#nome").val() === "" && $("#telefone").val() === "" && $("#email").val() === "") {
+                alert("Preencha os campos");
+            } else {
+                linhas.appendChild(linha);
+                contador++;
+            }
+
+        }
+
+
+
+        async function dados_scripts_whatsapp(id) {
+            fetch("../static/js/scripts.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    titulos_scripts = '';
+                    scripts = '';
+                    escolha = `<option selected>Escolha um Título</option>`;
+                    for (i = 0; i < data.length; i++) {
+                        titulos = `<option value="${data[i].textos.map(texto => texto.texto1)}">${data[i].tipo}</option>`;
+                        script = data[i].textos.map(texto => texto.texto1);
+                        titulos_scripts += titulos;
+                        scripts += script;
+                        console.log(data[i].tipo);
+                        console.log("Texto: " + data[i].textos.map(texto => texto.texto1));
+
+                        let container = document.querySelector(`.titulo_script_whatsapp${id}`);
+                        container.innerHTML = escolha + titulos_scripts;
+                    }
+                });
+        }
+
+
+        function seleciona_texto_whatsapp(obj) {
+            const titulo = $(".modal_msg").find(`.titulo_script_whatsapp${obj}`).val();
+            $(".modal_msg").find(`.script_pronto_whatsapp${obj}`).html(titulo);
+        }
+
+        async function dados_scripts_email(id) {
+            fetch("../static/js/scripts.json")
+                .then(function (resp) {
+                    return resp.json();
+                })
+                .then(function (data) {
+                    titulos_scripts = '';
+                    scripts = '';
+                    escolha = `<option selected>Escolha um Título</option>`;
+                    for (i = 0; i < data.length; i++) {
+                        titulos = `<option value="${data[i].textos.map(texto => texto.texto1)}">${data[i].tipo}</option>`;
+                        script = data[i].textos.map(texto => texto.texto1);
+                        titulos_scripts += titulos;
+                        scripts += script;
+                        console.log(data[i].tipo);
+                        console.log("Texto: " + data[i].textos.map(texto => texto.texto1));
+
+                        let container = document.querySelector(`.titulo_script_gmail${id}`);
+                        container.innerHTML = escolha + titulos_scripts;
+                    }
+                });
+        }
+
+
+        function envia_zap(numero, id) {
+            const text = $(`.modal_msg`).find(`.script_pronto_whatsapp${id}`).val();
+            console.log(text);
+
+            if (text === "") {
+                alert('Escreva uma mensagem para o destinatário');
+            } else {
+                var url = `https://wa.me//55${numero}?text=${encodeURI(text)}`;
+                window.open(url);
+            }
+
+        }
+
+
+
+        function seleciona_texto_gmail(obj) {
+            const titulo = $(".modal_msg").find(`.titulo_script_gmail${obj}`).val();
+            $(".modal_msg").find(`.script_pronto_gmail${obj}`).html(titulo);
+        }
+
+        function insere_select_edita(id) {
+            //const name = $().attr('name');
+            const prox_contato_id = $(`#dados_card${id}`).find(`.cliente_proximocontato`).val();
+            console.log(prox_contato_id);
+            if ($(`input[name='radio_select_${id}']:checked`).val() === "Comprou") {
+                $(`#modalEditar${id}`).find(`.insert_select_${id}`).html(`<select class="selectpicker form-control border-0  rounded shadow status" name='seleciona_status' onclick="muda_cor(this)">\
+                                    <option value="Selecione um status" selected>Status da operação</option>\
+                                    {%for status in status%}
+                                        <option value="{{status.id}}">{{status.status}}</option>
+                                    {%endfor%}
+                                </select>`);
+                $(`#modalEditar${id}`).find(`.btn_dias_${id}`).find(".col_tres_dias").remove();
+                $(`#modalEditar${id}`).find(`.btn_dias_${id}`).find(".col_cinco_dias").remove();
+                $(`#modalEditar${id}`).find(`motivo_select_${id}`).remove();
+
+            } else {
+                $(`#modalEditar${id}`).find(`.insert_select_${id}`).html(`<select name='seleciona_status' class="selectpicker form-control border-0  rounded shadow status" onclick="muda_cor(this)">\
+                                    <option value="Selecione um status" selected>Status da operação</option>\
+                                    {%for status in status%}
+                                        <option value="{{status.id}}">{{status.status}}</option>
+                                    {%endfor%}
+                                </select>`);
+
+                $(`#modalEditar${id}`).find(`.btn_dias_${id}`).html(`<div class='col-auto col_tres_dias'><button type='button' class='tres_dias btn btn-primary' onclick='contato_tres_dias_edita(this,${id})' data-dias="3">+ 3 dias</button></div>
+                                <div class='col-auto col_cinco_dias'><button type='button' class='cinco_dias btn btn-primary' onclick='contato_cinco_dias(this)' data-dias="5">+ 5 dias</button></div>`);
+
+                $(`#modalEditar${id}`).find(`.select_motivo_${id}`).html(`<select class="selectpicker form-control border-0 motivo_select_${id} rounded shadow motivo" onclick='motivo_resposta(this)' name='seleciona_motivo'>\
+                                    <option value="Selecione um motivo" selected>Selecione um motivo</option>\
+                                    {%for motivo in motivos%}
+                                        <option value="{{motivo.id}}">{{motivo.motivo}}</option>
+                                    {%endfor%}
+                                </select>`);
+
+                $(`#modalEditar${id}`).find(`.edita_prox_contato_modal`).html(`<div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Próximo Contato</span>
+                        <input type="text" class="form-control data_final" readonly name='edita_prox_contato_modal'
+                            value='${prox_contato_id}'>
+                    </div>`)
+
+            }
+        }
+
+        function insere_select(x) {
+            //const name = $().attr('name');
+            if ($(`input[name='radio_select']:checked`).val() === "Comprou") {
+                $(x).closest("#modalAdicionaCadastro").find(".insert_select").html(`<select class="selectpicker form-control border-0  rounded shadow status" name='seleciona_status' onclick="muda_cor(this)">\
+                                    <option value="Selecione um status" selected>Status da operação</option>\
+                                    {%for status in status%}
+                                        <option value="{{status.id}}">{{status.status}}</option>
+                                    {%endfor%}
+                                </select>`);
+                $(x).closest("#modalAdicionaCadastro").find(".btn_dias").find(".col_tres_dias").remove();
+                $(x).closest("#modalAdicionaCadastro").find(".btn_dias").find(".col_cinco_dias").remove();
+                $(x).closest("#modalAdicionaCadastro").find(".motivo_select").remove();
+
+            } else {
+                $(x).closest("#modalAdicionaCadastro").find(".insert_select").html(`<select name='seleciona_status' class="selectpicker form-control border-0  rounded shadow status" onclick="muda_cor(this)">\
+                                    <option value="Selecione um status" selected>Status da operação</option>\
+                                    {%for status in status%}
+                                        <option value="{{status.id}}">{{status.status}}</option>
+                                    {%endfor%}
+                                </select>`);
+
+                $(x).closest("#modalAdicionaCadastro").find(".btn_dias").html(`<div class='col-auto col_tres_dias'><button type='button' class='tres_dias btn btn-primary' onclick='contato_tres_dias(this)' data-dias="3">+ 3 dias</button></div>
+                                <div class='col-auto col_cinco_dias'><button type='button' class='cinco_dias btn btn-primary' onclick='contato_cinco_dias(this)' data-dias="5">+ 5 dias</button></div>`);
+
+                $(x).closest("#modalAdicionaCadastro").find(".select_motivo").html(`<select class="selectpicker form-control border-0 motivo_select rounded shadow motivo" onclick='motivo_resposta(this)' name='seleciona_motivo'>\
+                                    <option value="Selecione um motivo" selected>Selecione um motivo</option>\
+                                    {%for motivo in motivos%}
+                                        <option value="{{motivo.id}}">{{motivo.motivo}}</option>
+                                    {%endfor%}
+                                </select>`);
+
+            }
+        }
+
+        function motivo_resposta(selectElement) {
+            const selectedValue = selectElement.value;
+            const justificativa = $(selectElement).closest(".justificativa");
+
+            switch (selectedValue) {
+                case "Valor":
+                    $(selectElement).closest(".card").find(".justificativa").html("<p class='card-text m-2'><b>Texto pós: </b>Prezado(a) Sr.(a) , para que possamos agradar nossos clientes e adequar nosso serviço para os mesmos,\
+                        apresentamos uma melhor oportunidade para facilitar o pagamento</p>");
+                    break;
+                case "Localização":
+                    $(selectElement).closest(".card").find(".justificativa").html(`<p class='card-text m-2'><b>Texto pós: </b>Prezado(a) Sr.(a) , em caso de dificuldades para\
+                    deslocar-se, informamos que nossas consultorias acontecem de forma on-line, através das plataformas Teams ou Zoom, mediante à agendamento prévio.</p>`);
+                    break;
+                case "Distância":
+                    $(selectElement).closest(".card").find(".justificativa").html(`<p class='card-text m-2'><b>Texto pós: </b>Prezado(a) Sr.(a) , em caso de dificuldades para\
+                    deslocar-se, informamos que nossas consultorias acontecem de forma on-line, através das plataformas Teams ou Zoom, mediante à agendamento prévio.</p>`);
+                    break;
+                case "Forma de Pagamento":
+                    $(selectElement).closest(".card").find(".justificativa").html(`<p class='card-text m-2'><b>Texto pós: </b>Prezado(a) Sr.(a) , para facilitar a forma de pagamento de nossos clientes,\
+                    informamos que parcelamos nossos serviços em até 10x sem juros. Pagamentos à vista no débito ou PIX, ganham desconto de 30% em cima do valor total.</p>`);
+                    break;
+                default:
+                    $(selectElement).closest(justificativa).html("");
+                    break;
+            }
+        }
+
+        function muda_cor(selectElement) {
+            const selectedValue = selectElement.value;
+            const card = $(selectElement).closest("#modalAdicionaCadastro").find('.status').val();
+
+            switch (selectedValue) {
+                case 3:
+                    card.css('background', 'rgba(24,168,45)');
+                    card.css('background', 'linear-gradient(0deg, rgba(24,168,45,1) 53%, rgba(45,253,128,1) 100%)');
+                    card.css('color', 'white');
+                    break;
+                case 1:
+                    card.css('background', 'rgb(223,208,27)');
+                    card.css('background', 'linear-gradient(0deg, rgba(223,208,27,1) 38%, rgba(227,236,8,1) 61%)');
+                    card.css('color', 'white');
+                    break;
+                case 2:
+                    card.css('background', 'rgb(28,59,213)');
+                    card.css('background', 'linear-gradient(0deg, rgba(28,59,213,1) 37%, rgba(27,126,223,1) 75%)');
+                    card.css('color', 'white');
+                    break;
+                case 4:
+                    card.css('background', 'rgb(194,14,14)');
+                    card.css('background', 'linear-gradient(0deg, rgba(194,14,14,1) 36%, rgba(238,79,79,1) 75%)');
+                    card.css('color', 'white');
+                    break;
+                default:
+                    card.css('background-color', '');
+                    break;
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

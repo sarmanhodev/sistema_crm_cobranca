@@ -1,0 +1,51 @@
+[
+    {
+        "tipo": "Texto Inicial para Cobrança",
+        "textos": [
+            {
+                "texto": "Olá Dr. (a) Tudo bem? Hoje recebi o relatório do financeiro onde não foi encontrado o seu pagamento do mês  no valor de R$  . Tem como me enviar o comprovante para que eu possar dar baixa?"
+            }
+        ]
+    },
+    {
+        "tipo": "Texto após 24h",
+        "textos": [
+            {
+                "texto": "Olá, Dr.(a). Conseguiu ver a questão do pagamento para mim?"
+            }
+        ]
+    },
+    {
+        "tipo": "Texto após 48h",
+        "textos": [
+            {
+                "texto": "Olá, Dr.(a). Precisamos resolver esta pendência do pagamento. Se conseguirmos resolver isso até amanhã, posso tentar tirar os juros, mas só consigo isso com o financeiro para pagamento até amanhã, assim facilita?"
+            }
+        ]
+    },
+    {
+        "tipo": "Texto após 72h",
+        "textos": [
+            {
+                "texto": "Olá, Dr.(a). Ainda não conseguimos resolver a questão do pagamento. Sei que o seu dia deve estar bem corrido, porém haveria outra pessoa com quem eu possa resolver isso?"
+            }
+        ]
+    },
+    {
+        "tipo": "Texto após 03 dias",
+        "textos": [
+            {
+                "texto": "Olá, Dr.(a). Conseguiu ver a questão do pagamento para mim?"
+            }
+        ]
+    },
+    {
+        "tipo": "Texto após 07 dias",
+        "textos": [
+            {
+                "texto": "Dr.(a), precisamos resolver a questão o pagamento! Podemos nos falar?"
+            }
+        ]
+    }
+    
+]

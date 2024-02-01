@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Sistema CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link rel="stylesheet" href="../static/css/login.css">
+    <!--JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+
+<body>
+
+    <div class="banner">
+        <video autoplay muted loop>
+            <source src="../static/imagens/dashboard.mp4" type="video/mp4">
+        </video>
+
+        <!-- code here -->
+        <div class="card">
+            <div class="card-image">
+            </div>
+
+            <form action="/login" method="post" class="card-form formulario">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                    <h6 class="text-black">{{ message }}</h6>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                {% endif %}
+                {% endwith %}
+                <div class="input">
+                    <input type="text" class="input-field text-lowercase" name="usuarioEmail" id="email_usuario"
+                        required onkeyup="verifica_login()">
+                    <label class="input-label">E-mail</label>
+                </div>
+                <div class="input">
+                    <input type="password" class="input-field" name="usuarioSenha" id="senha_usuario"
+                        onkeyup="verifica_login()" required>
+                    <label class="input-label">Password</label>
+                    <button type="button" class="btn border-0 bg-light"
+                        style=" margin-bottom: -25px; margin-left: auto;" id="olhos" onclick="togglePass()">🔍</button>
+                </div>
+                <div class="insere_loader">
+
+                </div>
+                <div class="action ">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        class="action-button botao">Login</button>
+                </div>
+            </form>
+
+            <div class="row esqueci_senha">
+                <div class="col-md-12 card-info">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueciSenha">Esqueci Minha Senha</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--MODAL FAZENDO LOGIN-->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color:#6658d3;">
+                <div class="modal-body">
+                    <span role="status" class="fw-bold text-white fs-4">Redirecionando usuário</span>
+                    <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <div class="spinner-grow spinner-grow-sm text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--FIM MODAL FAZENDO LOGIN-->
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalEsqueciSenha" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Esqueceu sua senha?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Digite seu e-mail no campo abaixo</p>
+                    <div class="row ">
+                        <form action="{{url_for('verifica_email')}}" method="post">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="E-mail" aria-label="E-mail"
+                                    required name="recupera_email" aria-describedby="button-addon2">
+                                <button class="btn btn-personalizado text-white" type="submit" id="button-addon2"><i
+                                        class="bi bi-send-check"></i> Solicitar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function verifica_login() {
+            const email = $('.formulario').find("#email_usuario").val();
+            const password = $('.formulario').find("#senha_usuario").val();
+
+            if (email != '' && password.length > 5) {
+                $('.formulario').find('.action').css({ 'display': 'block' });
+            } else {
+
+                $('.formulario').find('.action').css({ 'display': 'none' });
+            }
+        }
+
+
+
+
+        function togglePass() {
+            const input = document.querySelector("#senha_usuario");
+            const button = document.querySelector("#olho");
+            //button.addEventListener('click', togglePass);
+            if (input.type == "password") {
+                input.type = "text";
+                button.textContent = "🔍";
+            } else {
+                input.type = "password";
+                button.textContent = "🔍";
+            }
+        }
+    </script>
+</body>
+
+</html>

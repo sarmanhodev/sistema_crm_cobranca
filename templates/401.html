@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Erro 401 - Acesso indevido</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row divflex">
+            <div class="col-md-6">
+                <h1 class="fw-bold text-white text-center fs-1 text-decoration-underline">Erro 401</h1>
+                <h4 class="text-white text-center">Você não tem permissão para acessar esta página. Por favor, faça login ou entre em
+                    contato com o
+                    administrador.</h4>
+            </div>            
+        </div>
+
+        <div class="row divflex">
+            <div class="col-md-12">
+                <img src="../static/imagens/401.png" class="img-fluid mx-auto d-block rounded" width="450" height="450" alt="">
+            </div>
+        </div>
+
+        <div class="row divflex">
+            <h3 class="text-white text-center">Você será redirecionado automaticamente para página de login</h3>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<style>
+    html,
+    body {
+        background-color: #6658d3;
+    }
+
+    .divflex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+</style>
+
+<script>
+    setTimeout(function () {
+        //https://sistema-crm.onrender.com/login
+        window.location.href = 'http://127.0.0.1:5000/login';
+    }, 5000);
+
+</script>
+
+</html>

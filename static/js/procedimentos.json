@@ -1,0 +1,21 @@
+[
+    {
+        "procedimento": "Rinoplastia",
+        "valor": "2.500"
+    },
+
+    {
+        "procedimento": "Abdominoplastia",
+        "valor": "4.500"
+    },
+
+    {
+        "procedimento": "Prótese de silicone",
+        "valor": "5.500"
+    },
+    
+    {
+        "procedimento": "Lipoaspiração",
+        "valor": "3.000"
+    }
+]

@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/pulse_effect.css">
+    <!--BOOTSTRAP ICONS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--CDN JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+    <!--DATATABLE JQUERY-->
+    <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <!--CDN MOMENT JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar bg-body-tertiary bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="m-1">
+                <h5 class="text-white">Relatório Anual - {{ano_atual.ano}} </h5>
+            </div>
+
+
+
+            <button type="button" class="btn btn-primary m-1" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir Relatório</button>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <img src="../static/imagens/crm.png" width="50" height="50" alt="logo">
+                    <a class="navbar-brand offcanvas-title" id="offcanvasNavbarLabel" href="#">Sistema CRM</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="row m-1">
+                    {%if current_user.is_authenticated %}
+                    <a class="text-white ">Seja bem-vindo(a) {{current_user.nome}}</a>
+                    {%endif%}
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " aria-current="page" href="{{url_for('home')}}"><i
+                                    class="bi bi-house-door-fill"></i> Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                Relatórios
+                            </a>
+                            <ul class="dropdown-menu">
+                                {%if current_user.is_authenticated%}
+                                <li><a class="dropdown-item"
+                                        href="{{url_for('graficos',token_acesso1=token_acesso1,gera_letra1=gera_letra1, usuario_id = current_user.id,gera_letra2=gera_letra2,token_acesso2=token_acesso2)}}"><i
+                                            class="bi bi-bar-chart-line-fill"></i> Gráficos</a></li>
+                                {%endif%}
+                            </ul>
+                        </li>
+                        {%if current_user.acesso_id == 2%}
+                        <li class="nav-item">
+                            <a class="nav-link active"
+                                href="{{url_for('painel_configuracoes_usuario', id = current_user.id)}}"
+                                aria-current="page">
+                                <i class="bi bi-gear"></i> Painel de Configurações
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if current_user.acesso_id == 1%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-speedometer2"></i> Painel do Administrador
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{url_for('painel_configuracoes')}}"><i
+                                            class="bi bi-gear"></i> Configurações
+                                        dos Usuários</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('inicio')}}"><i
+                                            class="bi bi-chat-left-text"></i> Scripts</a></li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-pdf"></i>
+                                Manual do Usuário
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" target="_blank" href="../static/documento/manual_sistema_crm.pdf"><i
+                                            class="bi bi-download"></i> Download Manual</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" aria-disabled="true" href="{{ url_for('logout') }}"><i
+                                    class="bi bi-box-arrow-left"></i> Logoff</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row divflex m-2">
+            <div class="col-md-auto card_deal m-2"
+                style="background: rgb(17,16,16);
+            background: linear-gradient(0deg, rgba(17,16,16,1) 32%, rgba(36,33,33,1) 66%);-webkit-print-color-adjust: exact;">
+                <h5 class="text-center" style="margin-top: 5px;"><b style="color: #d62828;">Pagamentos Pendentes</b>
+                </h5>
+                 {%if boletos_pendentes_anual == None %}
+                <h5 class="fw-bold text-center" style="color: #d62828;">Total {{ano_atual.ano}}:
+                    {{dados_boletos_pendentes_anual|count}}</h5>
+                <h5 class="text-center fw-bold" style="color: #d62828;">Perda: R$ 0.00</h5>
+                {%else%}
+                <h5 class="fw-bold text-center" style="color: #d62828;">Total {{ano_atual.ano}}:
+                    {{dados_boletos_pendentes_anual|count}}</h5>
+                <h5 class="text-center fw-bold" style="color: #d62828;">Perda: R$ {{boletos_pendentes_anual}}</h5>
+                {%endif%}
+            </div>
+
+            <div class="col-md-auto card_deal m-2"
+                style="background: rgb(17,16,16);
+            background: linear-gradient(0deg, rgba(17,16,16,1) 32%, rgba(36,33,33,1) 66%);-webkit-print-color-adjust: exact;">
+                <h5 class="text-center " style="margin-top: 5px; color: #38b000;"><b>Pagamentos Confirmados</b>
+                </h5>
+                <!--DADOS ANUAIS-->
+                {%if boletos_pagos_anual == None%}
+                <h5 class="fw-bold text-center" style="color: #38b000;">Total {{ano_atual.ano}}:
+                    {{dados_boletos_pagos_anual|count}}</h5>
+                <h5 class="fw-bold text-center" style="color: #38b000;">Lucro: R$ 0.00</h5>
+                {%else%}
+                <h5 class="fw-bold text-center" style="color: #38b000;">Total {{ano_atual.ano}}:
+                    {{dados_boletos_pagos_anual|count}}</h5>
+                <h5 class="fw-bold text-center" style="color: #38b000;">Lucro: R$ {{boletos_pagos_anual}}</h5>
+                {%endif%}
+            </div>
+
+            <div class="col-md-4 card_deal m-2"
+                style="background: rgb(17,16,16);
+            background: linear-gradient(0deg, rgba(17,16,16,1) 32%, rgba(36,33,33,1) 66%);-webkit-print-color-adjust: exact;">
+                <h6 class="text-center text-white" style="margin-top: 5px;"><b>Gráfico Pagamentos</b>
+                </h6>
+                <canvas id="compraprocedimentoChart" style="margin-bottom: 9px;"></canvas>
+            </div>
+        </div>
+
+        <div class="row m-1">
+            <div class="col-md-6 bg-light card_deal tabelaAnual">
+                <h5 class="text-center">Dados Mensais</h5>
+                <table class="table table-responsive table-bordered table-hover table-striped" id="tabelaAnual">
+                    <thead class="table-dark">
+                        <tr class="text-center">
+                            <th class="text-center" scope="col">Mês</th>
+                            <th class="text-center" scope="col">Inadimplentes</th>
+                            <th class="text-center" scope="col">Adimplentes</th>
+                            <th class="text-center" scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 1,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Janeiro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_janeiro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_janeiro|count}}
+                            </td>
+                            <td> 
+                                {{boletos_janeiro|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 2,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Fevereiro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_fevereiro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_fevereiro|count}}
+                            </td>
+                            <td>
+                                {{boletos_fevereiro|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 3,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Março</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_marco|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_marco|count}}
+                            </td>
+                            <td>
+                                {{boletos_marco|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 4,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Abril</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_abril|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_abril|count}}
+                            </td>
+                            <td>
+                                {{boletos_abril|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 5,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Maio</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_maio|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_maio|count}}
+                            </td>
+                            <td>
+                                {{boletos_maio|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id,token_acesso1= token_acesso1, mes_id = 6,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Junho</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_junho|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_junho|count}}
+                            </td>
+                            <td>
+                                {{boletos_junho|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 7,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Julho</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_julho|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_julho|count}}
+                            </td>
+                            <td>
+                                {{boletos_julho|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 8,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Agosto</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_agosto|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_agosto|count}}
+                            </td>
+                            <td>
+                                {{boletos_agosto|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 9,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Setembro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_setembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_setembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_setembro|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 10,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Outubro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_outubro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_outubro|count}}
+                            </td>
+                            <td>
+                                {{boletos_outubro|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = 11,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Novembro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_novembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_novembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_novembro|count}}
+                            </td>
+                        </tr>
+                        <tr class="text-center">
+                            <td><a
+                                    href="{{url_for('dados_mensal', ano_id = ano_atual.id,token_acesso1= token_acesso1, mes_id = 12,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}">Dezembro</a>
+                            </td>
+                            <td>
+                                {{boletos_pendentes_mensal_dezembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_pagos_mensal_dezembro|count}}
+                            </td>
+                            <td>
+                                {{boletos_dezembro|count}}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-5 card_deal m-2"
+                style="background: rgb(17,16,16); max-height: 310px;
+            background: linear-gradient(0deg, rgba(17,16,16,1) 32%, rgba(36,33,33,1) 66%);-webkit-print-color-adjust: exact;">
+                <h6 class="text-center text-white" style="margin-top: 5px;"><b>Gráfico Dados Mensais</b>
+                </h6>
+                <canvas id="graficoDadosMensais" style="margin-bottom: 9px;"></canvas>
+            </div>
+        </div>
+
+        <div class="row m-1">
+            <div class="col-md-8 card_deal bg-light">
+                <h5 class="text-center fw-bold">Total de Clientes em {{ano_atual.ano}}</h5>
+                <table id="tabelaClientesAnual"
+                    class="table table-responsive table-hover table-striped table-bordered ">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center" scope="col">Nome Cliente</th>
+                            <th class="text-center" scope="col">Total Boletos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for cliente in ano_atual.ano_clientes%}
+                        {%if current_user.empresa_id == cliente.empresa_id%}
+                        <tr style="cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#modalClienteBoleto{{cliente.id}}">
+                            <td class="text-center text-uppercase">
+                                {{cliente.nome}}
+                            </td>
+
+                            <td class="text-center">
+                                {{cliente.clientes_boleto|count}}
+                            </td>
+                        </tr>
+                        {%endif%}
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        {%for cliente in ano_atual.ano_clientes%}
+        {%if current_user.id == cliente.usuario_id%}
+        <!-- Modal Cliente Boleto Anual -->
+        <div class="modal fade" id="modalClienteBoleto{{cliente.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Cliente - <span
+                                class="text-capitalize">{{cliente.nome}}</span> </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <table
+                            class="table table-responsive table-hover table-striped table-bordered tabelaClienteBoleto">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="text-center" scope="col">Num. Boleto</th>
+                                    <th class="text-center" scope="col">Valor Boleto</th>
+                                    <th class="text-center" scope="col">Data Vencimento</th>
+                                    <th class="text-center" scope="col">Data Pagamento</th>
+                                    <th class="text-center" scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for boleto in cliente.clientes_boleto%}
+                                {%if boleto.status_id==1%}
+                                <tr style="cursor: pointer;" data-bs-toggle="modal"
+                                    data-bs-target="#modalClientesInadimplentes{{boleto.id}}"
+                                    onclick="converte_data({{boleto.id}})">
+                                    <td class="text-center text-danger fw-bold">
+                                        {{boleto.numero_boleto}}
+                                    </td>
+                                    <td class="text-center text-danger fw-bold">
+                                        R$ {{boleto.valor}}
+                                    </td>
+                                    <td class="text-center text-danger fw-bold">
+                                        {{boleto.data_vencimento}}
+                                    </td>
+                                    {%if boleto.data_pagamento == None%}
+                                    <td class="text-center text-danger fw-bold">Aguardando Pagamento</td>
+                                    {%else%}
+                                    <td class="text-center">
+                                        {{boleto.data_pagamento}}
+                                    </td>
+                                    {%endif%}
+                                    <td class="text-center text-danger fw-bold">
+                                        {{boleto.boleto_status.status}}
+                                        <input type="text" class="valor_multa{{boleto.id}}" hidden
+                                            value="{{boleto.valor_multa}}">
+
+                                        <input type="text" class="juros_diarios{{boleto.id}}" hidden
+                                            value="{{boleto.juros_diarios}}">
+                                    </td>
+                                </tr>
+
+                                {%else%}
+
+                                <tr style="cursor: pointer;" onclick="converte_data_adimplente({{boleto.id}})"
+                                    class="text-center" style="cursor: pointer;" data-bs-toggle="modal"
+                                    data-bs-target="#modalPagamentoConfirmado{{boleto.id}}">
+                                    <td class="text-center fw-bold text-success">
+                                        {{boleto.numero_boleto}}
+                                    </td>
+                                    <td class="text-center fw-bold text-success">
+                                        R$ {{boleto.valor}}
+                                    </td>
+                                    <td class="text-center fw-bold text-success">
+                                        {{boleto.data_vencimento}}
+                                        <input type="text" class="valor_multa{{boleto.id}}" hidden
+                                            value="{{boleto.valor_multa}}">
+                                        <input type="text" class="juros_diarios{{boleto.id}}" hidden
+                                            value="{{boleto.juros_diarios}}">
+                                    </td>
+                                    {%if boleto.data_pagamento == None%}
+                                    <td class="text-center">Aguardando Pagamento</td>
+                                    {%else%}
+                                    <td class="text-center fw-bold text-success">
+                                        {{boleto.data_pagamento}}
+                                    </td>
+                                    {%endif%}
+                                    <td class="text-center fw-bold text-success">
+                                        {{boleto.boleto_status.status}}
+                                    </td>
+                                </tr>
+                                {%endif%}
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        {%endfor%}
+
+        {%for cliente in ano_atual.ano_clientes%}
+        {%if current_user.id== cliente.usuario_id%}
+        {%for dados in cliente.cliente_cliente_dados%}
+        <!-- Modal Clientes Inadimplentes-->
+        <div class="modal fade" id="modalClientesInadimplentes{{dados.cliente_dados_boleto.id}}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Boleto Número
+                            {{dados.cliente_dados_boleto.numero_boleto}} </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row m-1">
+                            <div class="col-md-4">
+                                <h6>Número Boleto: {{dados.cliente_dados_boleto.numero_boleto}}</h6>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Valor Boleto: R$ {{dados.cliente_dados_boleto.valor}}</h6>
+                                <input type="text" value="{{dados.cliente_dados_boleto.valor}}" hidden
+                                    class="valor_boleto{{dados.cliente_dados_boleto.id}}">
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Data de Vencimento: {{dados.cliente_dados_boleto.data_vencimento}}</h6>
+                                <input type="text" hidden class="data_vencimento{{dados.cliente_dados_boleto.id}}"
+                                    value="{{dados.cliente_dados_boleto.data_vencimento}}">
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            <div class="col-md-4">
+                                <h6>Valor Multa Diária: R$ {{dados.cliente_dados_boleto.valor_multa}} </h6>
+                            </div>
+                            <div class="col-md-4 dados_dias_vencido{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+
+                            <div class="col-md-4 valor_multa_atualizada{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+
+                        </div>
+
+                        <div class="row m-1">
+                            <div class="col-md-6 valor_atualizado{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+                        </div>
+
+
+                        <div class='row justificativa m-1'>
+                            <div class="col-md-auto">
+                                <h6>Motivo do não pagamento: <span
+                                        class="fw-bold">{{dados.cliente_dados_topico.topico}}</span>
+                                </h6>
+                            </div>
+                        </div>
+
+                        {%if dados.cliente_dados_status.status == "Pagamento Pendente"%}
+                        <div class="row m-1">
+                            <div class="col-auto">
+                                <h6 class="card-text status_cliente{{dados.cliente_dados_boleto.id}}"
+                                    style="color: red;">
+                                    Status:
+                                    {{dados.cliente_dados_status.status}}</h6>
+                            </div>
+                            <div class="col-auto">
+                                <h6 class="blob red"></h6>
+                            </div>
+                        </div>
+                        <div class="row div-btn{{dados.cliente_dados_cliente.id}} m-1">
+                            <div class="col-md-auto m-1">
+                                <button class="btn btn-success btn_contratou{{dados.cliente_dados_boleto.id}}"
+                                    onclick="confirmar_pagamento({{dados.cliente_dados_cliente.id}},{{dados.cliente_dados_boleto.id}},{{dados.cliente_dados_boleto.valor}})">Pagamento
+                                    Confirmado</button>
+                            </div>
+                        </div>
+                        {%endif%}
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal Clientes Inadimplentes-->
+        <div class="modal fade" id="modalPagamentoConfirmado{{dados.cliente_dados_boleto.id}}" tabindex="-1"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Boleto Número
+                            {{dados.cliente_dados_boleto.numero_boleto}} </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row m-1">
+                            <div class="col-md-4">
+                                <h6>Número Boleto: {{dados.cliente_dados_boleto.numero_boleto}}</h6>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Valor Boleto: R$ {{dados.cliente_dados_boleto.valor}}</h6>
+                                <input type="text" value="{{dados.cliente_dados_boleto.valor}}" hidden
+                                    class="valor_boleto{{dados.cliente_dados_boleto.id}}">
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Data de Vencimento: {{dados.cliente_dados_boleto.data_vencimento}}</h6>
+                                <input type="text" hidden class="data_vencimento{{dados.cliente_dados_boleto.id}}"
+                                    value="{{dados.cliente_dados_boleto.data_vencimento}}">
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            <div class="col-md-4">
+                                <h6>Valor Multa Diária: R$ {{dados.cliente_dados_boleto.valor_multa}} </h6>
+                            </div>
+
+                            <div class="col-md-4">
+                                <h6>Valor Juros 1% ao Dia: R$ {{dados.cliente_dados_boleto.juros_diarios}} </h6>
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            <div class="col-md-4 dados_dias_vencido{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+
+                            <div class="col-md-4 valor_multa_atualizada{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+
+                            <div class="col-md-4 valor_atualizado{{dados.cliente_dados_boleto.id}}">
+
+                            </div>
+                        </div>
+
+                        <div class="row m-1">  
+                            <div class="col-md-4">
+                                <h6 class="fw-bold" style="color: #38b000;">Data Pagamento:
+                                    {{dados.cliente_dados_boleto.data_pagamento}}</h6>
+                                <input type="text" hidden class="data_pagamento{{dados.cliente_dados_boleto.id}}"
+                                    value="{{dados.cliente_dados_boleto.data_pagamento}}">
+                            </div>                         
+
+                            <div class="col-md-4">
+                                <h6 class="fw-bold" style="color: #38b000;">Valor Pago: R$
+                                    {{dados.cliente_dados_boleto.valor_pago}}</h6>
+                            </div>
+
+                        </div>
+
+
+                        <div class='row justificativa m-1'>
+                            <div class="col-md-auto">
+                                <h6>Motivo do não pagamento: <span
+                                        class="fw-bold">{{dados.cliente_dados_topico.topico}}</span>
+                                </h6>
+                            </div>
+                        </div>
+
+                        <div class="row m-1">
+                            {%if dados.cliente_dados_status.status == "Pagamento Confirmado"%}
+                            <div class="row">
+                                <div class="col-auto">
+                                    <h6 class="card-text status_cliente{{dados.cliente_dados_cliente.id}}"
+                                        style="color: green;">Status:
+                                        {{dados.cliente_dados_status.status}} </h6>
+                                </div>
+                                <div class="col-auto">
+                                    <h6 class="blob green"></h6>
+                                </div>
+                            </div>
+                            {%endif%}
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+        {%endif%}
+        {%endfor%}
+
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+
+<style>
+    .card_deal {
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+        border-radius: 5px;
+    }
+
+    .divflex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media print {
+
+        .tabelaAnual,
+        nav {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    function confirmar_pagamento(id, boleto_id, valor_boleto) {
+        $(`.div-btn${id}`).replaceWith(`<div class="col-md-6">
+                <div class="input-group mb-3">
+                <input type="date" class="form-control" id="data_pagamento${id}" placeholder="Data Pagamento" aria-label="Recipient's username" aria-describedby="button-save">
+                <input type="text" class="form-control" id="valor_pago${id}" value="${valor_boleto}" placeholder="Valor Pago" aria-label="Recipient's username" aria-describedby="button-save">
+                <button class="btn btn-success card_deal" data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmaPagamento${id}" onclick="pagamento_confirmado(${id}, ${boleto_id})" type="submit" id="button-save">Salvar</button>
+                </div>
+                </div>`);
+    }
+
+    function pagamento_confirmado(cliente_id, boleto_id) {
+        const data_pagamento = $(`#data_pagamento${cliente_id}`).val();
+        const date = new Date(data_pagamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+        const status = 'Pagamento Confirmado';
+        const valor_boleto = $(`#valor_pago${cliente_id}`).val();
+
+        var procedimento_dict = [{
+            "status": status, "data_pagamento": date, "valor_boleto": valor_boleto
+        }];
+        console.log(procedimento_dict);
+
+        $.ajax({
+            type: "POST",
+            url: "/pagamento_confirmado/" + cliente_id + "_" + boleto_id,
+            data: JSON.stringify(procedimento_dict),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (result) {
+                numRows.innerHTML = result.rows;
+            }
+        });
+
+        window.location.reload();
+    }
+
+    function converte_data(cliente_id) {
+        var data_atual = moment();
+        var data_vencimento = $(`#modalClientesInadimplentes${cliente_id}`).find(`.data_vencimento${cliente_id}`).val();
+        // Convertendo a string para um objeto Moment.js
+        var dataDoBancoDeDados = moment(data_vencimento, 'DD/MM/YYYY');
+        var total = data_atual.diff(dataDoBancoDeDados, 'months');
+
+        var valor_multa = $('.tabelaClienteBoleto').find(`.valor_multa${cliente_id}`).val();
+        var juros_diarios = $('.tabelaClienteBoleto').find(`.juros_diarios${cliente_id}`).val();
+        //VALOR DE 1% DE JUROS AO DIA
+        var valor_atualizado = juros_diarios * total;
+
+        var valor_boleto = $(`#modalClientesInadimplentes${cliente_id}`).find(`.valor_boleto${cliente_id}`).val();
+        var valor_atualizado_boleto = parseFloat(valor_boleto) + parseFloat(valor_multa) + valor_atualizado;
+
+        $(`#modalClientesInadimplentes${cliente_id}`).find(`.dados_dias_vencido${cliente_id}`).html(`<h6 href="${cliente_id}"> O boleto está vencido há ${total} mês(es).
+                            </h6>`);
+
+        $(`#modalClientesInadimplentes${cliente_id}`).find(`.valor_multa_atualizada${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor Atualizado da Multa: R$ ${parseFloat(valor_atualizado.toFixed(2))}
+                            </h6>`);
+
+        $(`#modalClientesInadimplentes${cliente_id}`).find(`.valor_atualizado${cliente_id}`).html(`<h6 href="${cliente_id}" class="fw-bold text-danger"> Valor Atualizado do Boleto:
+                R$ ${parseFloat(valor_atualizado_boleto.toFixed(2))}
+                            </h6>`);
+    }
+
+
+    function converte_data_adimplente(cliente_id) {
+        var data_atual = moment();
+        var data_vencimento = $(`#modalPagamentoConfirmado${cliente_id}`).find(`.data_vencimento${cliente_id}`).val();
+        var data_pagamento = $(`#modalPagamentoConfirmado${cliente_id}`).find(`.data_pagamento${cliente_id}`).val();
+        // Convertendo a string para um objeto Moment.js
+        var dataDoBancoDeDados = moment(data_vencimento, 'DD/MM/YYYY');
+        var datapagamento = moment(data_pagamento, 'DD/MM/YYYY');
+        var total = datapagamento.diff(dataDoBancoDeDados, 'months');
+
+        var valor_multa = $('.tabelaClienteBoleto').find(`.valor_multa${cliente_id}`).val();
+        var juros_diarios = $('.tabelaClienteBoleto').find(`.juros_diarios${cliente_id}`).val();
+        //VALOR DE 1% DE JUROS AO DIA
+        var valor_atualizado = juros_diarios * total;
+        var valor_boleto = $(`#modalPagamentoConfirmado${cliente_id}`).find(`.valor_boleto${cliente_id}`).val();
+        var valor_atualizado_boleto = parseFloat(valor_boleto) + valor_atualizado;
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.dados_dias_vencido${cliente_id}`).html(`<h6 href="${cliente_id}"> O boleto foi pago após ${total} mês(es) de vencido.
+                            </h6>`);
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.valor_multa_atualizada${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor Atualizado da Multa: R$ ${parseFloat(valor_atualizado.toFixed(2))}
+                            </h6>`);
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.valor_atualizado${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor Atualizado do Boleto:
+                R$ ${parseFloat(valor_atualizado_boleto.toFixed(2))}
+                            </h6>`);
+    }
+
+    $(document).ready(function () {
+        $('#tabelaAnual').DataTable({
+            order: [[1, 'desc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                'colvis'
+            ],
+            columnDefs: [{
+                targets: -1,
+                visible: true
+            }]
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#tabelaClientesAnual').DataTable({
+
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'copyHtml5',
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                'colvis'
+            ],
+            columnDefs: [{
+                targets: -1,
+                visible: true
+            }]
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('.tabelaClienteBoleto').DataTable({
+            order: [[1, 'desc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                'colvis'
+            ],
+            columnDefs: [{
+                targets: -1,
+                visible: true
+            }]
+
+        });
+    });
+
+
+    // CRIA GRÁFICO PARA SABER QUANTOS CONTRATARAM O SERVIÇO DE PROCEDIMENTO
+    const contratou_servico_procedimento = document.getElementById('compraprocedimentoChart');
+    new Chart(contratou_servico_procedimento, {
+        type: 'bar',
+        data: {
+            labels: ["Pagamento Pendente", "Pagamento Confirmado"],
+            datasets: [{
+                label: '#Boletos',
+                data: ['{{dados_boletos_pendentes_anual|count}}',
+                    '{{dados_boletos_pagos_anual|count}}'],
+                backgroundColor: [
+                    '#d62828',
+                    '#38b000'
+
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // CRIA GRÁFICO TOTAL BOLETOS POR MES
+    const grafico_dados_mensais = document.getElementById('graficoDadosMensais');
+    new Chart(grafico_dados_mensais, {
+        type: 'bar',
+        data: {
+            labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            datasets: [{
+                label: '#Total Boletos Mensal {{ano_atual.ano}} ',
+                data: ['{{boletos_janeiro|count}}', '{{boletos_fevereiro|count}}', '{{boletos_marco|count}}', '{{boletos_abril|count}}', '{{boletos_maio|count}}', '{{boletos_junho|count}}',
+                    '{{boletos_julho|count}}', '{{boletos_agosto|count}}', '{{boletos_setembro|count}}', '{{boletos_outubro|count}}', '{{boletos_novembro|count}}', '{{boletos_dezembro|count}}'],
+                backgroundColor: [
+                    '#264653',
+                    '#2a9d8f',
+                    '#e9c46a',
+                    '#f4a261',
+                    '#e76f51',
+                    '#2b2d42',
+                    '#8d99ae',
+                    '#edf2f4',
+                    '#ef233c',
+                    '#d90429',
+                    '#cad2c5',
+                    '#84a98c',
+
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+
+</script>
+
+</html>

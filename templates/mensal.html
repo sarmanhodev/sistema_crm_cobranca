@@ -1,0 +1,2022 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema CRM - Relatório Mensal - {{mes.mes}} - {{ano_atual.ano}} </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--CSS-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/pulse_effect.css">
+    <!--BOOTSTRAP ICONS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!--CDN JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+    <!--DATATABLE JQUERY-->
+    <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <!--CDN MOMENT JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar bg-body-tertiary bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="m-1">
+                <h5 class="text-white">Relatório {{mes.mes}} - {{ano_atual.ano}} </h5>
+            </div>
+
+            <div class="m-1"></div>
+
+            <button type="button" hidden disabled class="btn btn-primary m-1" data-bs-toggle="modal" onclick="novoCadastro()"
+                data-bs-target="#modalAdicionaCadastro">
+                + Adicionar Cadastro</button>
+
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <img src="../static/imagens/crm.png" width="50" height="50" alt="logo">
+                    <a class="navbar-brand offcanvas-title" id="offcanvasNavbarLabel" href="#">Sistema CRM</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="row m-1">
+                    {%if current_user.is_authenticated %}
+                    <a class="text-white ">Seja bem-vindo(a) {{current_user.nome}}</a>
+                    {%endif%}
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " aria-current="page" href="{{url_for('home')}}"><i
+                                    class="bi bi-house-door-fill"></i> Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                Relatórios Mensais
+                            </a>
+                            <ul class="dropdown-menu">
+                                {%for mes in ano_atual.ano_mes%}
+                                <li><a class="dropdown-item"
+                                        href="{{url_for('dados_mensal', ano_id = ano_atual.id, token_acesso1= token_acesso1, mes_id = mes.id,token_acesso2=token_acesso2, usuario_id = current_user.id,token_acesso3=token_acesso3)}}"><i
+                                            class="bi bi-calendar"></i> {{mes.mes}} </a></li>
+                                {%endfor%}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                Relatórios Anuais
+                            </a>
+                            <ul class="dropdown-menu">
+                                {%if current_user.is_authenticated%}
+                                <li><a class="dropdown-item"
+                                        href="{{url_for('graficos',token_acesso1=token_acesso1,gera_letra1=gera_letra1, usuario_id = current_user.id,gera_letra2=gera_letra2,token_acesso2=token_acesso2)}}"><i
+                                            class="bi bi-bar-chart-line-fill"></i> Gráficos</a></li>
+                                {%endif%}
+                            </ul>
+                        </li>
+                        {%if current_user.acesso_id == 2%}
+                        <li class="nav-item">
+                            <a class="nav-link active"
+                                href="{{url_for('painel_configuracoes_usuario', id = current_user.id)}}"
+                                aria-current="page">
+                                <i class="bi bi-gear"></i> Painel de Configurações
+                            </a>
+                        </li>
+                        {%endif%}
+                        {%if current_user.acesso_id == 1%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="bi bi-speedometer2"></i> Painel do Administrador
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{url_for('painel_configuracoes')}}"><i
+                                            class="bi bi-gear"></i> Configurações
+                                        dos Usuários</a></li>
+                                <li><a class="dropdown-item" href="{{url_for('inicio')}}"><i
+                                            class="bi bi-chat-left-text"></i> Scripts</a></li>
+                            </ul>
+                        </li>
+                        {%endif%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="bi bi-file-earmark-pdf"></i>
+                                Manual do Usuário
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" target="_blank" href="../static/documento/manual_sistema_crm.pdf"><i
+                                            class="bi bi-download"></i> Download Manual</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" aria-disabled="true" href="{{ url_for('logout') }}"><i
+                                    class="bi bi-box-arrow-left"></i> Logoff</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+
+        <div class="row m-1 divflex">
+            <div class="col-md-10 card_deal bg-body">
+
+                <h5 class="text-center" style="margin-top: 5px;"><b style="color: #d62828;">Pagamentos Pendentes</b>
+                </h5>
+                <div class="row">
+                    {%if boletos_pendentes_mensal == None%}
+                    <h5 class="fw-bold text-center" style="color: #d62828;">Total {{mes.mes}}:
+                        {{clientes_inadimplentes_mensal|count}}</h5>
+                    <h5 class="text-center fw-bold" style="color: #d62828;">Perda: R$ 0.00</h5>
+
+                    {%else%}
+
+                    <h5 class="fw-bold text-center" style="color: #d62828;">Total {{mes.mes}}:
+                        {{clientes_inadimplentes_mensal|count}}</h5>
+                    <h5 class="text-center fw-bold" style="color: #d62828;">Perda: R$ {{boletos_pendentes_mensal}}</h5>
+                    {%endif%}
+                </div>
+                <table id="tabelaInadimplentes"
+                    class="table table-responsive-lg table-hover table-striped table-bordered">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col" class="text-center">Nome</th>
+                            <th scope="col" class="text-center">Número</th>
+                            <th scope="col" class="text-center">Data Vencimento</th>
+                            <th scope="col" class="text-center">Valor Boleto</th>
+                            <th scope="col" class="text-center">Último Contato</th>
+                        </tr>
+                    </thead>
+                    <tbody class="pagamentos_pendentes">
+                        {%for cliente in clientes_inadimplentes_mensal%}
+                        <tr class="text-center" style="cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#modalPagamentoPendente{{cliente.cliente_dados_boleto.id}}"
+                            onclick="converte_data({{cliente.cliente_dados_boleto.id}})">
+                            <td class="text-danger text-uppercase"> {{cliente.cliente_dados_cliente.nome}} </td>
+                            <td class="text-danger">{{cliente.cliente_dados_boleto.numero_boleto}}</td>
+                            <td class="text-danger"> {{cliente.cliente_dados_boleto.data_vencimento}} </td>
+                            <td class="text-danger">R$ {{cliente.cliente_dados_boleto.valor}} <input type="text" hidden
+                                    class="valor_multa{{cliente.cliente_dados_boleto.id}}"
+                                    value="{{cliente.cliente_dados_boleto.valor_multa}}">
+                                    <input type="text" hidden
+                                    class="juros_diarios{{cliente.cliente_dados_boleto.id}}"
+                                    value="{{cliente.cliente_dados_boleto.juros_diarios}}"></td>
+                            {%if cliente.cliente_dados_mensagem == [] %}
+                            <td class="text-danger"> {{cliente.cliente_dados_contato.ultimo_contato}} </td>
+                            {%else%}
+                            <td class="text-danger"> {{cliente.cliente_dados_mensagem[-1].data_envio}} </td>
+                            {%endif%}
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+
+            {%for cliente in clientes_inadimplentes_mensal%}
+            <!-- Modal Clientes Inadimplentes -->
+            <div class="modal fade" id="modalPagamentoPendente{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 text-danger fw-bold" id="exampleModalLabel">Pagamento
+                                Pendente <i class="bi bi-hourglass-split"></i></h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!--INÍCIO CARD CLIENTE-->
+                            <div class=" card_dados m-1" id="dados_card{{cliente.cliente_dados_cliente.id}}">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <h5 class="card-title nome_cliente" id="nome_cliente">
+                                                Cliente: <span
+                                                    style="text-transform: capitalize;">{{cliente.cliente_dados_cliente.nome}}</span>
+                                            </h5>
+                                        </div>
+
+
+                                        <div class="col-auto">
+                                            <a type="button" href="/home/historico/{{cliente.cliente_dados_cliente.id}}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalHistorico{{cliente.cliente_dados_boleto.id}}"
+                                                style="cursor: pointer; background: rgb(217,82,42);
+                             background: linear-gradient(0deg, rgba(217,82,42,1) 35%, rgba(235,117,38,1) 65%); color: white;"
+                                                class="btn card_deal tooltip-test" title="Histórico de Mensagens"><i
+                                                    class="bi bi-clock-history"></i></a>
+
+                                        </div>
+                                        <div class="col-auto">
+                                            <a type="button"
+                                                href="/home/edita_registro/{{cliente.cliente_dados_cliente.id}}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEditar{{cliente.cliente_dados_cliente.id}}"
+                                                style="cursor: pointer; rgb(61,92,240);
+                             background: radial-gradient(circle, rgba(61,92,240,1) 26%, rgba(3,20,163,1) 100%); color:white;" class="btn card_deal tooltip-test"
+                                                title="Editar registro"><i class="bi bi-pencil-square"></i></a>
+
+                                        </div>
+                                        <div class="col-auto">
+                                            <a type="button"
+                                                href="/home/apaga_registro/{{cliente.cliente_dados_cliente.id}}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalConfirma{{cliente.cliente_dados_boleto.id}}"
+                                                style="cursor: pointer;rgb(214,50,70);
+                             background: radial-gradient(circle, rgba(214,50,70,1) 26%, rgba(163,3,3,1) 100%); color: white;"
+                                                class="btn card_deal tooltip-test" title="Excluir registro"><i
+                                                    class="bi bi-trash3-fill"></i></a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row float-start">
+                                        <input type="number" value="{{cliente.cliente_dados_cliente.id}}" hidden
+                                            class="cliente_id">
+
+                                    </div>
+
+                                    <div class='row'>
+                                        <div class="col-md-3">Tel.: <span
+                                                class="tooltip-test">{{cliente.cliente_dados_cliente.telefone}}</span>
+                                        </div>
+
+                                        <div class="col-md-6">Email: <span
+                                                class="tooltip-test">{{cliente.cliente_dados_cliente.email}}</a>
+                                        </div>
+                                    </div>
+
+                                    <div class='row'>
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" readonly class="form-control primeiro_contato "
+                                                    id="primeiro_contato" placeholder="Primeiro Contato"
+                                                    value='{{cliente.cliente_dados_contato.primeiro_contato}}'>
+                                                <label for="primeiro_contato">Primeiro Contato</label>
+                                            </div>
+                                        </div>
+
+                                        {%if cliente.cliente_dados_contato.proximo_contato != null %}
+                                        <div class='col-md-6'>
+
+                                            <div id="mais_cinco_dias{{cliente.cliente_dados_cliente.id}}" class="row">
+                                                <form
+                                                    action="{{url_for('update_proximocontato', cliente_id= cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                                    method='post'>
+                                                    <div class="input-group form-floating mb-3">
+                                                        <input type="text" readonly
+                                                            class="form-control cliente_proximocontato "
+                                                            id="proximo_contato" placeholder="Próximo
+                                                             Contato" name="adiciona_cinco_dias" readonly
+                                                            class="form-control cliente_proximocontato"
+                                                            value='{{cliente.cliente_dados_contato.proximo_contato}}'>
+                                                        <button type='submit' class='btn_salva btn btn-success'
+                                                            data-dias="5"
+                                                            onclick="contato_cinco_dias({{cliente.cliente_dados_cliente.id}})"
+                                                            title='Adicionar Cinco Dias'>
+                                                            +5
+                                                        </button>
+                                                        <label for="proximo_contato">Próximo
+                                                            Contato</label>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        {%endif%}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-3">
+                                                <input type="text"
+                                                    class="form-control data_final data_ultimo_contato_leads" readonly
+                                                    placeholder="Último Contato"
+                                                    value='{{cliente.cliente_dados_contato.ultimo_contato}}'>
+                                                <label for="ultimo_contato">Último
+                                                    Contato</label>
+                                            </div>
+                                        </div>
+
+                                        <div id="input_date{{cliente.cliente_dados_cliente.id}}" class="col-md-6">
+                                            <form
+                                                action="{{url_for('update_ultimocontato',cliente_id = cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                                method='post'>
+
+                                                <div class="input-group form-floating mb-3">
+                                                    <input type='date' placeholder="Alterar Último Contato"
+                                                        class='form-control data_modificada div_data'
+                                                        name='ultimo_contato'>
+                                                    <button type='submit' class='btn_salva btn btn-success'
+                                                        title='Alterar Data'>
+                                                        <i class='bi bi-check-square'></i>
+                                                    </button>
+
+                                                    <label for="ultimo_contato">Alterar
+                                                        Último
+                                                        Contato</label>
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class='row btn_dias'>
+
+                                    </div>
+
+                                    <br>
+
+                                    <div class='prox_contato'> </div>
+
+                                    <div class="row m-1">
+                                        <div class="col-md-4">
+                                            <h6>Número Boleto: {{cliente.cliente_dados_boleto.numero_boleto}}
+                                            </h6>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h6>Valor Boleto: R$ {{cliente.cliente_dados_boleto.valor}}</h6>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h6>Data Vencimento:
+                                                <span>{{cliente.cliente_dados_boleto.data_vencimento}}</span>
+                                            </h6>
+
+                                            <input type="text" hidden
+                                                class="data_vencimento{{cliente.cliente_dados_boleto.id}}"
+                                                value="{{cliente.cliente_dados_boleto.data_vencimento}}">
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row m-1">
+                                        <div class="col-md-4">
+                                            <h6>Valor Multa: R$
+                                                {{cliente.cliente_dados_boleto.valor_multa}}</h6>
+
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h6>Valor Juros 1%: R$
+                                                {{cliente.cliente_dados_boleto.juros_diarios}}</h6>
+
+                                        </div>
+
+                                        <input type="text" value="{{cliente.cliente_dados_boleto.valor}}" hidden
+                                            class="valor_boleto{{cliente.cliente_dados_boleto.id}}">
+
+                                    </div>
+
+                                    <div class="row m-1">
+                                        <div class="col-md-4 dados_dias_vencido{{cliente.cliente_dados_boleto.id}}">
+
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <h6 class="valor_multa_atualizada{{cliente.cliente_dados_boleto.id}}">
+                                            </h6>
+                                        </div>
+
+                                        <div class="col-md-4 text-danger valor_atualizado{{cliente.cliente_dados_boleto.id}}">
+
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class='row justificativa m-1'>
+                                        <div class="col-md-auto">
+                                            <h6>Motivo do não pagamento: <span
+                                                    class="fw-bold">{{cliente.cliente_dados_topico.topico}}</span>
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    {%if cliente.cliente_dados_status.status == "Pagamento Pendente"%}
+                                    <div class="row m-1">
+                                        <div class="col-auto">
+                                            <h6 class="card-text status_cliente{{cliente.id}}" style="color: red;">
+                                                Status:
+                                                {{cliente.cliente_dados_status.status}}</h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <h6 class="blob red"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="row div-btn{{cliente.cliente_dados_cliente.id}} m-1">
+                                        <div class="col-md-auto m-1">
+                                            <button class="btn btn-success btn_contratou{{cliente.id}}"
+                                                onclick="confirmar_pagamento({{cliente.cliente_dados_cliente.id}},{{cliente.cliente_dados_boleto.id}},{{cliente.cliente_dados_boleto.valor}})">Pagamento
+                                                Confirmado</button>
+                                        </div>
+                                    </div>
+                                    {%endif%}
+
+                                </div>
+                                <!--FIM CARD CLIENTE-->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL HISTÓRICO DE TEXTOS -->
+            <div class="modal fade" id="modalHistoricoTextos{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Histórico de
+                                Textos - <span class="text-capitalize">{{cliente.cliente_dados_topico.topico}}</span>
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INÍCIO FORM EDITA CLIENTE-->
+                            {%for texto in textos%}
+                            <div class="row m-1">
+                                <div class="card_deal">
+
+                                    <br>
+                                    <div class="row">
+                                        {%if texto.texto_topico.topico ==
+                                        cliente.cliente_topico.topico%}
+                                        <p class="text-capitalize lh-base"><b>Texto:</b>
+                                            {{texto.texto}}</p>
+                                        {%endif%}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            {%endfor%}
+                            <!--FINAL FORM EDITA CLIENTE-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL HISTÓRICO DE MENSAGENS-->
+
+            <!-- Modal EMAIL -->
+            <div class="modal fade modal_msg" id="modalEmail{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="modalMensagem" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMensagem"><i
+                                    class="bi bi-envelope-arrow-up-fill"></i><strong> Enviar
+                                    Email</strong></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body row g-3">
+
+                            <form
+                                action="{{url_for('envia_email',cliente_id=cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {%if current_user.is_authenticated %}
+                                            <input type="text" hidden name="email_usuario_logado"
+                                                value="{{current_user.email}}">
+                                            {%endif%}
+                                            <input type="text" readonly class="form-control" id="floatingName"
+                                                name="nome" placeholder="Nome" style="text-transform: uppercase;"
+                                                required value="{{cliente.nome}}">
+                                            <label for="floatingName"><strong>Nome</strong></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" readonly id="enderecoEmail" style="width: 300px;"
+                                                class="form-control" id="email" name="email" required
+                                                value="{{cliente.email}}">
+                                            <label for="enderecoEmail"><strong>Email</strong></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h6 class="fw-bold">Regras:</h6>
+                                        <ol>
+                                            <li><b>Nunca</b> cobrar no grupo;</li>
+                                            <li>Atualizar a planilha sempre que enviar ou receber contato;</li>
+                                            <li>Sempre poderá tirar a multa para pagamento imediato;</li>
+                                            <li class="fw-bold">Sempre pegar comprovante do pagamento;</li>
+                                            <li><b>Após 07 dias:</b> Começar o protocolo de ligação (duas vezes
+                                                por
+                                                dia)</li>
+                                            <li><b>Após de 01 semana</b> tentando ligar e não conseguindo,
+                                                passar o
+                                                caso para mim.</li>
+
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" id="assuntoEmail" style="width: 350px;"
+                                                class="form-control" id="assunto" name="assunto_email" required>
+                                            <label for="assuntoEmail"><strong>Assunto</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <select class="form-select titulo_script_gmail{{cliente.id}}"
+                                            aria-label="Seleciona Script"
+                                            onchange="seleciona_texto_gmail({{cliente.id}})">
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating">
+                                    <textarea class="form-control script_pronto_gmail{{cliente.id}}"
+                                        name="texto_mensagem" rows="3"></textarea>
+                                    <label for="floatingSelect">Digite sua mensagem</label>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" id="envia" data-bs-toggle="modal" data-bs-target="#loading"
+                                        class="btn btn-success"><i class="bi bi-envelope-arrow-up-fill"></i> Enviar
+                                        Email</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL EMAIL-->
+
+            <!-- Modal Messenger -->
+            <div class="modal fade modal_msg" id="modalMessenger{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="modalMensagem" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMensagem"><i class="bi bi-whatsapp"></i><strong>
+                                    Enviar
+                                    Mensagem - WhatsApp</strong></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body row g-3">
+                            <form
+                                action="{{url_for('salva_mensagem', cliente_id= cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="post">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" readonly class="form-control" id="floatingName"
+                                                name="nome" placeholder="Nome" style="text-transform: uppercase;"
+                                                required value="{{cliente.cliente_dados_cliente.nome}}">
+                                            <label for="floatingName"><strong>Nome</strong></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="tel" readonly id="floatingTelefone" style="width: 200px;"
+                                                class="form-control" id="tel" name="telefone"
+                                                placeholder="Somente Números" required
+                                                value="+55{{cliente.cliente_dados_cliente.telefone}}">
+                                            <label for="floatingTelefone"><strong>Tel. de
+                                                    Contato</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h6 class="fw-bold">Regras:</h6>
+                                        <ol>
+                                            <li><b>Nunca</b> cobrar no grupo;</li>
+                                            <li>Atualizar a planilha sempre que enviar ou receber contato;</li>
+                                            <li>Sempre poderá tirar a multa para pagamento imediato;</li>
+                                            <li class="fw-bold">Sempre pegar comprovante do pagamento;</li>
+                                            <li><b>Após 07 dias:</b> Começar o protocolo de ligação (duas vezes
+                                                por
+                                                dia)</li>
+                                            <li><b>Após de 01 semana</b> tentando ligar e não conseguindo,
+                                                passar o
+                                                caso para mim.</li>
+
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="assuntoMensagem"
+                                                name="assuntoMensagem" placeholder="Assunto"
+                                                style="text-transform: uppercase;" required>
+                                            <label for="assuntoMensagem">Digite o assunto</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <select
+                                            class="form-select titulo_script_whatsapp{{cliente.cliente_dados_cliente.id}}"
+                                            aria-label="Seleciona Script"
+                                            onchange="seleciona_texto_whatsapp({{cliente.cliente_dados_cliente.id}})">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating">
+                                    <textarea
+                                        class="form-control script_pronto_whatsapp{{cliente.cliente_dados_cliente.id}}"
+                                        required name="texto_mensagem" rows="3"></textarea>
+                                    <label for="floatingSelect">Digite sua mensagem</label>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" id="envia"
+                                        onclick="envia_zap({{cliente.cliente_dados_cliente.telefone}},{{cliente.cliente_dados_cliente.id}})"
+                                        class="btn btn-success"><i class="bi bi-whatsapp"></i> Enviar
+                                        WhatsApp</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL-->
+
+            <!-- MODAL HISTÓRICO DE MENSAGENS -->
+            <div class="modal fade" id="modalHistorico{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Histórico de
+                                Mensagens - <span class="text-uppercase">{{cliente.cliente_dados_cliente.nome}}</span>
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-auto"><button title="Enviar mensagem via WhatsApp"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalMessenger{{cliente.cliente_dados_cliente.id}}" style="background: rgb(61,240,73);
+        background: radial-gradient(circle, rgba(61,240,73,1) 26%, rgba(33,101,19,1) 100%);"
+                                        onclick="dados_scripts_whatsapp({{cliente.cliente_dados_cliente.id}})"
+                                        class="btn card_deal text-white"><i class="bi bi-whatsapp"></i>
+                                        Enviar WhatsApp</button></div>
+
+                                <div class="col-auto"><button href="/sendemail/{{cliente.cliente_dados_cliente.id}}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEmail{{cliente.cliente_dados_cliente.id}}"
+                                        onclick="dados_scripts_email({{cliente.cliente_dados_cliente.id}})" style="background: rgb(61,92,240);
+        background: radial-gradient(circle, rgba(61,92,240,1) 26%, rgba(3,20,163,1) 100%);"
+                                        title="Enviar Email para o Cliente {{cliente.cliente_dados_cliente.nome}}"
+                                        class="btn card_deal text-white"><i class="bi bi-envelope-arrow-up-fill"></i>
+                                        Enviar
+                                        Email</button></div>
+                            </div>
+                            <br>
+                            <!--INÍCIO HISTÓRICO DE MENSAGENS/EMAIL-->
+                            {%for mensagens in cliente.cliente_dados_mensagem%}
+                            <div class="row m-1">
+                                <div class="card_deal">
+                                    <div class="col-auto">
+                                        <span class="text-capitalize"><b>Enviado Via:</b>
+                                            {{mensagens.origem}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>Tel. Contato:
+                                            </b>{{cliente.cliente_dados_cliente.telefone}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>E-mail: </b>{{cliente.cliente_dados_cliente.email}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>Data de envio:</b>
+                                            {{mensagens.data_envio}}</span>
+                                    </div>
+                                    <p class="text-capitalize"><b>Assunto:</b>
+                                        {{mensagens.assunto}}</p>
+                                    <p class="text-capitalize"><b>Texto:</b>
+                                        {{mensagens.texto}}</p>
+                                </div>
+                            </div>
+                            <br>
+                            {%endfor%}
+                            <!--FINAL  HISTÓRICO DE MENSAGENS/EMAIL-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL HISTÓRICO DE MENSAGENS-->
+
+            <!-- Modal confirma exclusão -->
+            <div class="modal fade" id="modalConfirma{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                aria-labelledby="confirma" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirma">Excluir Registro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Deseja realmente excluir o registro referente ao(a) Sr.(a) <b
+                                style="text-transform: capitalize;">{{cliente.cliente_dados_cliente.nome}}</b>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                    class="bi bi-x"></i>
+                                Não</button>
+
+                            <form
+                                action="{{url_for('delete', cliente_id =cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="post">
+                                <button type="submit" data-bs-toggle="modal"
+                                    data-bs-target="#modalAguardaExclusaoCliente{{cliente.cliente_dados_cliente.id}}"
+                                    class="btn btn-success"><i class="bi bi-check2"></i> Sim</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL CONFIRMA EXCLUSÃO-->
+
+            <!-- Modal AGUARDA exclusão Cliente -->
+            <div class="modal fade" id="modalAguardaExclusaoCliente{{cliente.cliente_dados_cliente.id}}"
+                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content bg-danger">
+                        <div class="modal-body">
+                            <span class="spinner-border spinner-border-sm text-light" aria-hidden="true"></span>
+                            <span role="status" class="text-white">Aguarde! Excluindo registro do cliente
+                                {{cliente.cliente_dados_cliente.nome}}...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim Modal AGUARDA exclusão Cliente -->
+
+
+            <!-- MODAL EDITA CLIENTE -->
+            <div class="modal fade" id="modalEditar{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar
+                                Cadastro Cliente - {{cliente.cliente_dados_cliente.nome}} </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INÍCIO FORM EDITA CLIENTE-->
+                            <form action="{{url_for('update_cliente', id= cliente.cliente_dados_cliente.id)}}"
+                                method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control primeiro_contato_editado"
+                                                iname="primeiro_contato_editado" readonly
+                                                value="{{cliente.cliente_dados_contato.primeiro_contato}}"
+                                                id="primeiro_contato" placeholder="Data Cadastro">
+                                            <label for="primeiro_contato">Data Cadastro</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control text-uppercase" id="nome"
+                                            name="nome_editado" value="{{cliente.cliente_dados_cliente.nome}}"
+                                            placeholder="Nome">
+                                        <label for="nome">Nome</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="telefone"
+                                                value="{{cliente.cliente_dados_cliente.telefone}}"
+                                                name="telefone_editado" placeholder="Telefone">
+                                            <label for="telefone">Telefone</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="email"
+                                                value="{{cliente.cliente_dados_cliente.email}}" name="email_editado"
+                                                placeholder="Email">
+                                            <label for="floatingInput">Email</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" data-bs-toggle="modal"
+                                        data-bs-target="#modalAguardaAtualiza{{cliente.cliente_dados_cliente.id}}"
+                                        class="btn btn-success">Salvar</button>
+                                </div>
+                            </form>
+                            <!--FINAL FORM EDITA CLIENTE-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL EDITA CLIENTE-->
+
+
+            <!-- Modal AGUARDA ATUALIZAÇÃO CLIENTE -->
+            <div class="modal fade" id="modalAguardaAtualiza{{cliente.cliente_dados_cliente.id}}"
+                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content bg-primary">
+                        <div class="modal-body">
+                            <span class="spinner-border spinner-border-sm text-light" aria-hidden="true"></span>
+                            <span role="status" class="text-white">Aguarde! Atualizando registro...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim Modal AGUARDA ATUALIZAÇÃO CLIENTE -->
+
+
+            <!-- Modal AGUARDA Confirmação de Pagamento -->
+            <div class="modal fade" id="modalConfirmaPagamento{{cliente.cliente_dados_cliente.id}}"
+                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content bg-success">
+                        <div class="modal-body">
+                            <span class="spinner-border spinner-border-sm text-light" aria-hidden="true"></span>
+                            <span role="status" class="text-white">Aguarde! Confirmando o pagamento do boleto de
+                                número
+                                {{cliente.cliente_dados_boleto.numero_boleto}} de valor R$
+                                {{cliente.cliente_dados_boleto.valor_pago}}...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim Modal AGUARDA Confirmação de Pagamento -->
+            {%endfor%}
+
+
+
+        </div>
+
+
+
+        <div class="row m-1 divflex pagamento_confirmado">
+            <div class="col-md-10 card_deal bg-body">
+                <h5 class="text-center " style="margin-top: 5px; color: #38b000;"><b>Pagamentos Confirmados</b>
+                </h5>
+                <!--DADOS ANUAIS-->
+                {%if boletos_pagos_mensal == None%}
+                <h5 class="fw-bold text-center" style="color: #38b000;">Total {{mes.mes}}:
+                    {{clientes_adimplentes_mensal|count}}</h5>
+                <h5 class="fw-bold text-center" style="color: #38b000;">Lucro: R$ 0.00</h5>
+                {%else%}
+                <h5 class="fw-bold text-center" style="color: #38b000;">Total {{mes.mes}}:
+                    {{clientes_adimplentes_mensal|count}}</h5>
+                <h5 class="fw-bold text-center" style="color: #38b000;">Lucro: R$ {{boletos_pagos_mensal}}</h5>
+                {%endif%}
+                <table id="tabelaAdimplentes"
+                    class="table tabelaadimplentes table-responsive-lg table-hover table-striped table-bordered">
+                    <thead class="table-dark text-center">
+                        <tr class="text-center">
+                            <th scope="col" class="text-center">Nome</th>
+                            <th scope="col" class="text-center">Número</th>
+                            <th scope="col" class="text-center">Data Vencimento</th>
+                            <th scope="col" class="text-center">Data Pagamento</th>
+                            <th scope="col" class="text-center">Valor Boleto</th>
+                            <th scope="col" class="text-center">Valor Pago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for cliente in clientes_adimplentes_mensal%}
+                        <tr onclick="converte_data_adimplente({{cliente.cliente_dados_boleto.id}})" class="text-center"
+                            style="cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#modalPagamentoConfirmado{{cliente.cliente_dados_boleto.id}}">
+                            <td class="text-uppercase"> {{cliente.cliente_dados_cliente.nome}} </td>
+                            <td class="text-center"> {{cliente.cliente_dados_boleto.numero_boleto}} </td>
+                            <td> {{cliente.cliente_dados_boleto.data_vencimento}} </td>
+                            <td> {{cliente.cliente_dados_boleto.data_pagamento}} </td>
+                            <input type="text" hidden class="data_pagamento{{cliente.cliente_dados_boleto.id}}"
+                                value="{{cliente.cliente_dados_boleto.data_pagamento}}">
+
+                            <input type="text" hidden class="data_vencimento{{cliente.cliente_dados_boleto.id}}"
+                                value="{{cliente.cliente_dados_boleto.data_vencimento}}">
+                            <td>R$ {{cliente.cliente_dados_boleto.valor}} </td>
+                            <input type="text" class="valor_boleto{{cliente.cliente_dados_boleto.id}}" hidden
+                                value="{{cliente.cliente_dados_boleto.valor}}">
+                                <input type="text" class="juros_diarios{{cliente.cliente_dados_boleto.id}}" hidden
+                                value="{{cliente.cliente_dados_boleto.juros_diarios}}">
+                            <td class="fw-bold" style="color: #38b000;">R$ {{cliente.cliente_dados_boleto.valor_pago}} </td>
+                            <input type="text" class="valor_multa{{cliente.cliente_dados_boleto.id}}" hidden
+                                value="{{cliente.cliente_dados_boleto.valor_multa}}">
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+
+                {%for cliente in clientes_adimplentes_mensal%}
+                <!-- Modal -->
+                <div class="modal fade" id="modalPagamentoConfirmado{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5 fw-bold text-success" id="exampleModalLabel">Pagamento
+                                    Confirmado <i class="bi bi-cash-stack"></i></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!--INÍCIO CARD CLIENTE-->
+                                <div class=" card_dados m-1" id="dados_card{{cliente.cliente_dados_cliente.id}}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <h5 class="card-title nome_cliente" id="nome_cliente">
+                                                    Cliente: <span
+                                                        style="text-transform: capitalize;">{{cliente.cliente_dados_cliente.nome}}</span>
+                                                </h5>
+                                            </div>
+
+
+                                            <div class="col-auto">
+                                                <a type="button"
+                                                    href="/home/historico/{{cliente.cliente_dados_cliente.id}}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalHistorico{{cliente.cliente_dados_boleto.id}}"
+                                                    style="cursor: pointer; background: rgb(217,82,42);
+                                background: linear-gradient(0deg, rgba(217,82,42,1) 35%, rgba(235,117,38,1) 65%); color: white;"
+                                                    class="btn card_deal tooltip-test" title="Histórico de Mensagens"><i
+                                                        class="bi bi-clock-history"></i></a>
+
+                                            </div>
+                                            <div class="col-auto">
+                                                <a type="button"
+                                                    href="/home/edita_registro/{{cliente.cliente_dados_cliente.id}}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalEditar{{cliente.cliente_dados_cliente.id}}"
+                                                    style="cursor: pointer; rgb(61,92,240);
+                                background: radial-gradient(circle, rgba(61,92,240,1) 26%, rgba(3,20,163,1) 100%); color:white;"
+                                                    class="btn card_deal tooltip-test" title="Editar registro"><i
+                                                        class="bi bi-pencil-square"></i></a>
+
+                                            </div>
+                                            <div class="col-auto">
+                                                <a type="button"
+                                                    href="/home/apaga_registro/{{cliente.cliente_dados_cliente.id}}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalConfirma{{cliente.cliente_dados_boleto.id}}"
+                                                    style="cursor: pointer;rgb(214,50,70);
+                                background: radial-gradient(circle, rgba(214,50,70,1) 26%, rgba(163,3,3,1) 100%); color: white;"
+                                                    class="btn card_deal tooltip-test" title="Excluir registro"><i
+                                                        class="bi bi-trash3-fill"></i></a>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row float-start">
+                                            <input type="number" value="{{cliente.cliente_dados_cliente.id}}" hidden
+                                                class="cliente_id">
+
+                                        </div>
+
+                                        <div class='row'>
+                                            <div class="col-md-3">Tel.: <span
+                                                    class="tooltip-test">{{cliente.cliente_dados_cliente.telefone}}</span>
+                                            </div>
+
+                                            <div class="col-md-6">Email: <span
+                                                    class="tooltip-test">{{cliente.cliente_dados_cliente.email}}</a>
+                                            </div>
+                                        </div>
+
+                                        <div class='row'>
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" readonly class="form-control primeiro_contato "
+                                                        id="primeiro_contato" placeholder="Primeiro Contato"
+                                                        value='{{cliente.cliente_dados_contato.primeiro_contato}}'>
+                                                    <label for="primeiro_contato">Primeiro Contato</label>
+                                                </div>
+                                            </div>
+
+                                            {%if cliente.cliente_dados_contato.proximo_contato != null %}
+                                            <div class='col-md-6'>
+
+                                                <div id="mais_cinco_dias{{cliente.cliente_dados_cliente.id}}"
+                                                    class="row">
+                                                    <form
+                                                        action="{{url_for('update_proximocontato', cliente_id= cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                                        method='post'>
+                                                        <div class="input-group form-floating mb-3">
+                                                            <input type="text" readonly
+                                                                class="form-control cliente_proximocontato "
+                                                                id="proximo_contato" placeholder="Próximo
+                                                                Contato" name="adiciona_cinco_dias" readonly
+                                                                class="form-control cliente_proximocontato"
+                                                                value='{{cliente.cliente_dados_contato.proximo_contato}}'>
+                                                            <button type='submit' class='btn_salva btn btn-success'
+                                                                data-dias="5"
+                                                                onclick="contato_cinco_dias({{cliente.cliente_dados_cliente.id}})"
+                                                                title='Adicionar Cinco Dias'>
+                                                                +5
+                                                            </button>
+                                                            <label for="proximo_contato">Próximo
+                                                                Contato</label>
+
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            {%endif%}
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating mb-3">
+                                                    <input type="text"
+                                                        class="form-control data_final data_ultimo_contato_leads"
+                                                        readonly placeholder="Último Contato"
+                                                        value='{{cliente.cliente_dados_contato.ultimo_contato}}'>
+                                                    <label for="ultimo_contato">Último
+                                                        Contato</label>
+                                                </div>
+                                            </div>
+
+                                            <div id="input_date{{cliente.cliente_dados_cliente.id}}" class="col-md-6">
+                                                <form
+                                                    action="{{url_for('update_ultimocontato', cliente_id = cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                                    method='post'>
+
+                                                    <div class="input-group form-floating mb-3">
+                                                        <input type='date' placeholder="Alterar Último Contato"
+                                                            class='form-control data_modificada div_data'
+                                                            name='ultimo_contato'>
+                                                        <button type='submit' class='btn_salva btn btn-success'
+                                                            title='Alterar Data'>
+                                                            <i class='bi bi-check-square'></i>
+                                                        </button>
+
+                                                        <label for="ultimo_contato">Alterar
+                                                            Último
+                                                            Contato</label>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class='row btn_dias'>
+
+                                        </div>
+
+                                        <br>
+
+                                        <div class='prox_contato'> </div>
+
+                                        <div class="row m-1">
+                                            <div class="col-md-4">
+                                                <h6>Número Boleto: {{cliente.cliente_dados_boleto.numero_boleto}}
+                                                </h6>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>Data Vencimento: <span
+                                                        class="data_vencimento{{cliente.cliente_dados_cliente.id}}">{{cliente.cliente_dados_boleto.data_vencimento}}</span>
+                                                </h6>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>Valor Boleto: R$ {{cliente.cliente_dados_boleto.valor}}</h6>
+                                            </div>
+                                        </div>
+
+                                        <div class="row m-1">
+                                            <div class="col-md-4">
+                                                <h6>Valor Multa: R$
+                                                    {{cliente.cliente_dados_boleto.valor_multa}}</h6>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <h6>Valor Juros 1%: R$
+                                                    {{cliente.cliente_dados_boleto.juros_diarios}}</h6>
+                                            </div>
+                                        </div>
+
+                                        <div class="row m-1">
+                                            <div
+                                                class="col-md-4 dados_dias_vencido{{cliente.cliente_dados_boleto.id}}">
+
+                                            </div>
+
+                                            <div
+                                                class="col-md-4 valor_multa_atualizada{{cliente.cliente_dados_boleto.id}}">
+
+                                            </div>
+                                            <div class="col-md-4 valor_atualizado{{cliente.cliente_dados_boleto.id}}">
+
+                                            </div>                                            
+                                        </div>
+
+                                        <div class="row m-1">
+                                            <div class="col-md-4">
+                                                <h6 class="fw-bold" style="color: #38b000;">Data de Pagamento:
+                                                    {{cliente.cliente_dados_boleto.data_pagamento}}</h6>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <h6 class="fw-bold" style="color: #38b000;">Valor Pago: R$
+                                                    {{cliente.cliente_dados_boleto.valor_pago}}</h6>
+                                            </div>
+                                        </div>
+
+                                        <br>
+
+                                        <div class='row justificativa m-1'>
+                                            <div class="col-md-auto">
+                                                <h6>Motivo do não pagamento: <span
+                                                        class="fw-bold">{{cliente.cliente_dados_topico.topico}}</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+
+                                        <div class="row m-1">
+                                            {%if cliente.cliente_dados_status.status == "Pagamento Confirmado"%}
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <h6 class="card-text status_cliente{{cliente.cliente_dados_cliente.id}}"
+                                                        style="color: green;">Status:
+                                                        {{cliente.cliente_dados_status.status}} </h6>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <h6 class="blob green"></h6>
+                                                </div>
+                                            </div>
+                                            {%endif%}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!--FIM CARD CLIENTE-->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sair</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- MODAL HISTÓRICO DE TEXTOS -->
+            <div class="modal fade" id="modalHistoricoTextos{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Histórico de
+                                Textos - <span class="text-capitalize">{{cliente.cliente_dados_topico.topico}}</span>
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INÍCIO FORM EDITA CLIENTE-->
+                            {%for texto in textos%}
+                            <div class="row m-1">
+                                <div class="card_deal">
+
+                                    <br>
+                                    <div class="row">
+                                        {%if texto.texto_topico.topico ==
+                                        cliente.cliente_dados_topico.topico%}
+                                        <p class="text-capitalize lh-base"><b>Texto:</b>
+                                            {{texto.texto}}</p>
+                                        {%endif%}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <br>
+                            {%endfor%}
+                            <!--FINAL FORM EDITA CLIENTE-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL HISTÓRICO DE MENSAGENS-->
+
+            <!-- Modal EMAIL -->
+            <div class="modal fade modal_msg" id="modalEmail{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="modalMensagem" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMensagem"><i
+                                    class="bi bi-envelope-arrow-up-fill"></i><strong> Enviar
+                                    Email</strong></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body row g-3">
+
+                            <form
+                                action="{{url_for('envia_email',cliente_id=cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="POST">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {%if current_user.is_authenticated %}
+                                            <input type="text" hidden name="email_usuario_logado"
+                                                value="{{current_user.email}}">
+                                            {%endif%}
+                                            <input type="text" readonly class="form-control" id="floatingName"
+                                                name="nome" placeholder="Nome" style="text-transform: uppercase;"
+                                                required value="{{cliente.cliente_dados_cliente.nome}}">
+                                            <label for="floatingName"><strong>Nome</strong></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" readonly id="enderecoEmail" style="width: 300px;"
+                                                class="form-control" id="email" name="email" required
+                                                value="{{cliente.cliente_dados_cliente.email}}">
+                                            <label for="enderecoEmail"><strong>Email</strong></label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h6 class="fw-bold">Regras:</h6>
+                                        <ol>
+                                            <li><b>Nunca</b> cobrar no grupo;</li>
+                                            <li>Atualizar a planilha sempre que enviar ou receber contato;</li>
+                                            <li>Sempre poderá tirar a multa para pagamento imediato;</li>
+                                            <li class="fw-bold">Sempre pegar comprovante do pagamento;</li>
+                                            <li><b>Após 07 dias:</b> Começar o protocolo de ligação (duas vezes
+                                                por
+                                                dia)</li>
+                                            <li><b>Após de 01 semana</b> tentando ligar e não conseguindo,
+                                                passar o
+                                                caso para mim.</li>
+
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" id="assuntoEmail" style="width: 350px;"
+                                                class="form-control" id="assunto" name="assunto_email" required>
+                                            <label for="assuntoEmail"><strong>Assunto</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <select
+                                            class="form-select titulo_script_gmail{{cliente.cliente_dados_cliente.id}}"
+                                            aria-label="Seleciona Script"
+                                            onchange="seleciona_texto_gmail({{cliente.cliente_dados_cliente.id}})">
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating">
+                                    <textarea
+                                        class="form-control script_pronto_gmail{{cliente.cliente_dados_cliente.id}}"
+                                        name="texto_mensagem" rows="3"></textarea>
+                                    <label for="floatingSelect">Digite sua mensagem</label>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" id="envia" data-bs-toggle="modal" data-bs-target="#loading"
+                                        class="btn btn-success"><i class="bi bi-envelope-arrow-up-fill"></i> Enviar
+                                        Email</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL EMAIL-->
+
+            <!-- Modal Messenger -->
+            <div class="modal fade modal_msg" id="modalMessenger{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="modalMensagem" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMensagem"><i class="bi bi-whatsapp"></i><strong>
+                                    Enviar
+                                    Mensagem - WhatsApp</strong></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body row g-3">
+                            <form
+                                action="{{url_for('salva_mensagem', cliente_id= cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="post">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" readonly class="form-control" id="floatingName"
+                                                name="nome" placeholder="Nome" style="text-transform: uppercase;"
+                                                required value="{{cliente.cliente_dados_cliente.nome}}">
+                                            <label for="floatingName"><strong>Nome</strong></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="tel" readonly id="floatingTelefone" style="width: 200px;"
+                                                class="form-control" id="tel" name="telefone"
+                                                placeholder="Somente Números" required
+                                                value="+55{{cliente.cliente_dados_cliente.telefone}}">
+                                            <label for="floatingTelefone"><strong>Tel. de
+                                                    Contato</strong></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h6 class="fw-bold">Regras:</h6>
+                                        <ol>
+                                            <li><b>Nunca</b> cobrar no grupo;</li>
+                                            <li>Atualizar a planilha sempre que enviar ou receber contato;</li>
+                                            <li>Sempre poderá tirar a multa para pagamento imediato;</li>
+                                            <li class="fw-bold">Sempre pegar comprovante do pagamento;</li>
+                                            <li><b>Após 07 dias:</b> Começar o protocolo de ligação (duas vezes
+                                                por
+                                                dia)</li>
+                                            <li><b>Após de 01 semana</b> tentando ligar e não conseguindo,
+                                                passar o
+                                                caso para mim.</li>
+
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="assuntoMensagem"
+                                                name="assuntoMensagem" placeholder="Assunto"
+                                                style="text-transform: uppercase;" required>
+                                            <label for="assuntoMensagem">Digite o assunto</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <select
+                                            class="form-select titulo_script_whatsapp{{cliente.cliente_dados_cliente.id}}"
+                                            aria-label="Seleciona Script"
+                                            onchange="seleciona_texto_whatsapp({{cliente.cliente_dados_cliente.id}})">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating">
+                                    <textarea
+                                        class="form-control script_pronto_whatsapp{{cliente.cliente_dados_cliente.id}}"
+                                        required name="texto_mensagem" rows="3"></textarea>
+                                    <label for="floatingSelect">Digite sua mensagem</label>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" id="envia"
+                                        onclick="envia_zap({{cliente.cliente_dados_cliente.telefone}},{{cliente.cliente_dados_cliente.id}})"
+                                        class="btn btn-success"><i class="bi bi-whatsapp"></i> Enviar
+                                        WhatsApp</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL-->
+
+            <!-- MODAL HISTÓRICO DE MENSAGENS -->
+            <div class="modal fade" id="modalHistorico{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Histórico de
+                                Mensagens - {{cliente.cliente_dados_cliente.nome}} </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-auto"><button title="Enviar mensagem via WhatsApp"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalMessenger{{cliente.cliente_dados_cliente.id}}" style="background: rgb(61,240,73);
+                    background: radial-gradient(circle, rgba(61,240,73,1) 26%, rgba(33,101,19,1) 100%);"
+                                        onclick="dados_scripts_whatsapp({{cliente.cliente_dados_cliente.id}})"
+                                        class="btn card_deal text-white"><i class="bi bi-whatsapp"></i>
+                                        Enviar WhatsApp</button></div>
+
+                                <div class="col-auto"><button href="/sendemail/{{cliente.cliente_dados_cliente.id}}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEmail{{cliente.cliente_dados_cliente.id}}"
+                                        onclick="dados_scripts_email({{cliente.cliente_dados_cliente.id}})" style="background: rgb(61,92,240);
+                    background: radial-gradient(circle, rgba(61,92,240,1) 26%, rgba(3,20,163,1) 100%);"
+                                        title="Enviar Email para o Cliente {{cliente.cliente_dados_cliente.nome}}"
+                                        class="btn card_deal text-white"><i class="bi bi-envelope-arrow-up-fill"></i>
+                                        Enviar
+                                        Email</button></div>
+                            </div>
+                            <br>
+                            <!--INÍCIO HISTÓRICO DE MENSAGENS/EMAIL-->
+                            {%for mensagens in cliente.cliente_dados_mensagem%}
+                            <div class="row m-1">
+                                <div class="card_deal">
+                                    <div class="col-auto">
+                                        <span class="text-capitalize"><b>Enviado Via:</b>
+                                            {{mensagens.origem}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>Tel. Contato:
+                                            </b>{{cliente.cliente_dados_cliente.telefone}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>E-mail: </b>{{cliente.cliente_dados_cliente.email}}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <span><b>Data de envio:</b>
+                                            {{mensagens.data_envio}}</span>
+                                    </div>
+                                    <p class="text-capitalize"><b>Assunto:</b>
+                                        {{mensagens.assunto}}</p>
+                                    <p class="text-capitalize"><b>Texto:</b>
+                                        {{mensagens.texto}}</p>
+                                </div>
+                            </div>
+                            <br>
+                            {%endfor%}
+                            <!--FINAL  HISTÓRICO DE MENSAGENS/EMAIL-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL HISTÓRICO DE MENSAGENS-->
+
+            <!-- Modal confirma exclusão -->
+            <div class="modal fade" id="modalConfirma{{cliente.cliente_dados_boleto.id}}" tabindex="-1"
+                aria-labelledby="confirma" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirma">Excluir Registro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Deseja realmente excluir o registro referente ao(a) Sr.(a) <b
+                                style="text-transform: capitalize;">{{cliente.cliente_dados_cliente.nome}}</b>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                    class="bi bi-x"></i>
+                                Não</button>
+                            <form
+                                action="{{url_for('delete', cliente_id =cliente.cliente_dados_cliente.id, boleto_id = cliente.cliente_dados_boleto.id)}}"
+                                method="post">
+                                <button type="submit" data-bs-toggle="modal"
+                                    data-bs-target="#modalAguardaExclusaoCliente{{cliente.cliente_dados_cliente.id}}"
+                                    class="btn btn-success"><i class="bi bi-check2"></i> Sim</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FIM MODAL CONFIRMA EXCLUSÃO-->
+
+
+
+
+            <!-- Modal AGUARDA exclusão Cliente -->
+            <div class="modal fade" id="modalAguardaExclusaoCliente{{cliente.cliente_dados_cliente.id}}"
+                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content bg-danger">
+                        <div class="modal-body">
+                            <span class="spinner-border spinner-border-sm text-light" aria-hidden="true"></span>
+                            <span role="status" class="text-white">Aguarde! Excluindo registro do cliente
+                                {{cliente.cliente_dados_cliente.nome}}...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim Modal AGUARDA exclusão Cliente -->
+
+            <!-- MODAL EDITA CLIENTE -->
+            <div class="modal fade" id="modalEditar{{cliente.cliente_dados_cliente.id}}" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar
+                                Cadastro Cliente - {{cliente.cliente_dados_cliente.nome}} </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <!--INÍCIO FORM EDITA CLIENTE-->
+                            <form action="{{url_for('update_cliente', id= cliente.cliente_dados_cliente.id)}}"
+                                method="post">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control primeiro_contato_editado"
+                                                iname="primeiro_contato_editado" readonly
+                                                value="{{cliente.cliente_dados_contato.primeiro_contato}}"
+                                                id="primeiro_contato" placeholder="Data Cadastro">
+                                            <label for="primeiro_contato">Data Cadastro</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control text-uppercase" id="nome"
+                                            name="nome_editado" value="{{cliente.cliente_dados_cliente.nome}}"
+                                            placeholder="Nome">
+                                        <label for="nome">Nome</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="telefone"
+                                                value="{{cliente.cliente_dados_cliente.telefone}}"
+                                                name="telefone_editado" placeholder="Telefone">
+                                            <label for="telefone">Telefone</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="form-floating mb-3">
+                                            <input type="email" class="form-control" id="email"
+                                                value="{{cliente.cliente_dados_cliente.email}}" name="email_editado"
+                                                placeholder="Email">
+                                            <label for="floatingInput">Email</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Sair</button>
+                                    <button type="submit" class="btn btn-success">Salvar</button>
+                                </div>
+                            </form>
+                            <!--FINAL FORM EDITA CLIENTE-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--FINAL MODAL EDITA CLIENTE-->
+
+
+
+
+            <!-- Modal AGUARDA ATUALIZAÇÃO CLIENTE -->
+            <div class="modal fade" id="modalAguardaAtualiza{{cliente.cliente_dados_cliente.id}}"
+                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered">
+                    <div class="modal-content bg-primary">
+                        <div class="modal-body">
+                            <span class="spinner-border spinner-border-sm text-light" aria-hidden="true"></span>
+                            <span role="status" class="text-white">Aguarde! Atualizando registro...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim Modal AGUARDA ATUALIZAÇÃO CLIENTE -->
+            {%endfor%}
+        </div>
+    </div>
+
+    <div class="row m-1 divflex">
+
+        <div class="col-md-4 card_deal m-4" style="background: rgb(17,16,16);
+            background: linear-gradient(0deg, rgba(17,16,16,1) 32%, rgba(36,33,33,1) 66%);">
+            <h6 class="text-center text-white" style="margin-top: 5px;"><b>Gráfico Pagamentos</b>
+            </h6>
+            <canvas id="compraprocedimentoChart" style="margin-bottom: 9px;"></canvas>
+        </div>
+    </div>
+
+
+
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+
+<style>
+    .card_deal {
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+        border-radius: 5px;
+    }
+
+    .divflex {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    // CRIA GRÁFICO PARA SABER QUANTOS CONTRATARAM O SERVIÇO DE PROCEDIMENTO
+    const contratou_servico_procedimento = document.getElementById('compraprocedimentoChart');
+    new Chart(contratou_servico_procedimento, {
+        type: 'pie',
+        data: {
+            labels: ["Pagamento Pendente", "Pagamento Confirmado"],
+            datasets: [{
+                label: '#Clientes',
+                data: ['{{clientes_inadimplentes_mensal|count}}',
+                    '{{clientes_adimplentes_mensal|count}}'],
+                backgroundColor: [
+                    '#d62828',
+                    '#38b000'
+
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+    $(document).ready(function () {
+        $('#tabelaInadimplentes').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                },
+                'colvis'
+            ],
+            columnDefs: [{
+                targets: -1,
+                visible: true
+            }]
+
+        });
+    });
+
+    $(document).ready(function () {
+        $('#tabelaAdimplentes').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    },
+                },
+                'colvis'
+            ],
+            columnDefs: [{
+                targets: -1,
+                visible: true
+            }]
+
+        });
+    });
+
+    function converte_data(cliente_id) {
+        var data_atual = moment();
+        var data_vencimento = $(`#modalPagamentoPendente${cliente_id}`).find(`.data_vencimento${cliente_id}`).val();
+        // Convertendo a string para um objeto Moment.js
+        var dataDoBancoDeDados = moment(data_vencimento, 'DD/MM/YYYY');
+        var total = data_atual.diff(dataDoBancoDeDados, 'months');
+
+        var valor_multa = $('.pagamentos_pendentes').find(`.valor_multa${cliente_id}`).val();
+        var juros_diarios = $('.pagamentos_pendentes').find(`.juros_diarios${cliente_id}`).val();
+        var valor_atualizado = juros_diarios * total;
+
+        var valor_boleto = $(`#modalPagamentoPendente${cliente_id}`).find(`.valor_boleto${cliente_id}`).val();
+        var valor_atualizado_boleto = parseFloat(valor_boleto)+ parseFloat(valor_multa) + valor_atualizado;
+
+        $(`#modalPagamentoPendente${cliente_id}`).find(`.dados_dias_vencido${cliente_id}`).html(`<h6 href="${cliente_id}"> O boleto está vencido há ${total} mês(es).
+                            </h6>`);
+
+        $(`#modalPagamentoPendente${cliente_id}`).find(`.valor_multa_atualizada${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor atualizado de juros de 1% ao mês: R$ ${parseFloat(valor_atualizado.toFixed(2))}
+                            </h6>`);
+
+        $(`#modalPagamentoPendente${cliente_id}`).find(`.valor_atualizado${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor Atualizado do Boleto:
+                R$ ${parseFloat(valor_atualizado_boleto.toFixed(2))}
+                            </h6>`);
+    }
+
+
+    function converte_data_adimplente(cliente_id) {
+        var data_atual = moment();
+        var data_vencimento = $(`.pagamento_confirmado`).find(`.data_vencimento${cliente_id}`).val();
+        var data_pagamento = $(`.pagamento_confirmado`).find(`.data_pagamento${cliente_id}`).val();
+        // Convertendo a string para um objeto Moment.js
+        var dataDoBancoDeDados = moment(data_vencimento, 'DD/MM/YYYY');
+        var datapagamento = moment(data_pagamento, 'DD/MM/YYYY');
+        var total = datapagamento.diff(dataDoBancoDeDados, 'months');
+
+        var valor_multa = $('.pagamento_confirmado').find(`.valor_multa${cliente_id}`).val();
+        var juros_diarios = $('.pagamento_confirmado').find(`.juros_diarios${cliente_id}`).val();
+        var valor_atualizado = juros_diarios * total;
+
+        var valor_boleto = $(`.pagamento_confirmado`).find(`.valor_boleto${cliente_id}`).val();
+        var valor_atualizado_boleto = parseFloat(valor_boleto)+ parseFloat(valor_multa) + valor_atualizado;
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.dados_dias_vencido${cliente_id}`).html(`<h6 href="${cliente_id}"> O boleto foi pago após ${total} mês(es) de vencido.
+                            </h6>`);
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.valor_multa_atualizada${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor atualizado de juros de 1% ao mês: R$ ${parseFloat(valor_atualizado.toFixed(2))}
+                            </h6>`);
+
+        $(`#modalPagamentoConfirmado${cliente_id}`).find(`.valor_atualizado${cliente_id}`).html(`<h6 href="${cliente_id}"> Valor Atualizado do Boleto:
+                R$ ${parseFloat(valor_atualizado_boleto.toFixed(2))}
+                            </h6>`);
+    }
+
+    function get_data_atual() {
+        let data_atual = new Date();
+        $("#data_atual").html(`<input type="text" id="calendario" name="data_atual" value='${data_atual.toLocaleDateString()}' readonly
+                                    class="form-control text-uppercase">
+                                    <label for="calendario">Data Cadastro</label>`)
+        console.log(data_atual.toLocaleDateString());
+    }
+
+    get_data_atual();
+
+    function libera_botao(id) {
+        if ($('input[name=checkContratou]:checked').val() === 'checkContratou') {
+            $(`#cliente${id}`).find('.insere_formulario').find('.formulario_cadastro').html('<div class="row linha_inputs">\
+                <div class="col-md-auto">\
+                <div class= "form-floating mb-3" >\
+                <input type="date" class="form-control" name="data_vencimento"\
+                id="data_vencimento" placeholder="Data Vencimento">\
+                <label for="data_vencimento">Data Vencimento</label>\
+                </div>\
+                </div >\
+                <div class="col-md-auto">\
+                <button type="submit" class= "btn btn-primary card_deal\
+                btn-cadastra" > Contratou</button >\
+                </div >\
+                </div > ');
+        } else {
+            $(`#cliente${id}`).find('.insere_formulario').find('.formulario_cadastro').find('.linha_inputs').remove();
+        }
+    }
+
+    //PRORROGARÁ POR MAIS 3 DIAS O PRÓXIMO CONTATO, COM BASE NA DATA DE CASTRO DO CLIENTE
+    function contato_tres_dias(button) {
+        const modal_data = $(button).closest("#modalAdicionaCadastro").find("#data_atual").find("#calendario").val();
+        console.log("data: " + modal_data);
+        const dataFormatada = moment(modal_data, "DD/MM/YYYY");
+        const dias = parseInt($(button).data("dias"));
+        var minhaData = dataFormatada.clone().add(dias, 'days').format('DD/MM/YYYY');
+        console.log(minhaData);
+        $(button).closest("#modalAdicionaCadastro").find(".prox_contato_modal").html(`
+                                <div class="form-floating mb-3">
+                                    <input class="form-control" value='${minhaData}' name='data_proximo_contato' placeholder="Próximo Contato"
+                                        type="text" readonly> <label for="titulo_vencimento">Próximo Contato</label>
+                                </div>`);
+    }
+
+    //PRORROGARÁ POR MAIS 5 DIAS O PRÓXIMO CONTATO, COM BASE NO ÚLTIMO CONTATO COM O CLIENTE
+    function contato_cinco_dias(id) {
+        const data_final = $(`#dados_card${id}`).find(".data_final").val();
+        console.log(data_final);
+
+        moment.locale('pt-br');
+        const dataFormatada = moment(data_final, "DD/MM/YYYY");
+        //const dias = parseInt($(id).data("dias"));
+        var minhaData = dataFormatada.clone().add(5, 'days').format('DD/MM/YYYY');
+        console.log(minhaData);
+        //card.find(".proximo_contato").html(minhaData);
+        $(`#dados_card${id}`).find(".cliente_proximocontato").replaceWith(`<input type="text" name="adiciona_cinco_dias" readonly
+                                        class="form-control cliente_proximocontato"
+                                        value='${minhaData}'>`);
+    }
+
+
+    //PRORROGARÁ POR MAIS 3 DIAS O PRÓXIMO CONTATO -> MODAL EDITA CADASTRO
+    function contato_tres_dias_edita(button, id) {
+        const modal_data = $(button).closest(`#modalEditar${id}`).find(".primeiro_contato_editado").val();
+        console.log(modal_data);
+        data = new Date(modal_data);
+        const dtFormatada = data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+        console.log(dtFormatada);
+        moment.locale('pt-br');
+        const dataFormatada = moment(dtFormatada, "DD/MM/YYYY");
+        const dias = parseInt($(button).data("dias"));
+        var minhaData = dataFormatada.clone().add(dias, 'days').format('DD/MM/YYYY');
+        console.log(minhaData);
+        $(button).closest(`#modalEditar${id}`).find(".edita_prox_contato_modal").html(`<p class='text'>Próximo Contato: <input type='text' readonly class='proximo_contato' value='${minhaData}' name='edita_prox_contato_modal'></p>`);
+    }
+
+
+    async function dados_scripts_whatsapp(id) {
+        fetch("../static/js/script_cobranca.json")
+            .then(function (resp) {
+                return resp.json();
+            })
+            .then(function (data) {
+                titulos_scripts = '';
+                scripts = '';
+                escolha = `<option selected>Escolha um tópico</option>`;
+                for (i = 0; i < data.length; i++) {
+                    titulos = `<option value="${data[i].textos.map(texto => texto.texto)}">${data[i].tipo}</option>`;
+                    script = data[i].textos.map(texto => texto.texto);
+                    titulos_scripts += titulos;
+                    scripts += script;
+                    console.log(data[i].tipo);
+                    console.log("Texto: " + data[i].textos.map(texto => texto.texto));
+
+                    let container = document.querySelector(`.titulo_script_whatsapp${id}`);
+                    container.innerHTML = escolha + titulos_scripts;
+                }
+            });
+    }
+
+
+    function seleciona_texto_whatsapp(obj) {
+        const titulo = $(".modal_msg").find(`.titulo_script_whatsapp${obj}`).val();
+        $(".modal_msg").find(`.script_pronto_whatsapp${obj}`).html(titulo);
+    }
+
+    async function dados_scripts_email(id) {
+        fetch("../static/js/script_cobranca.json")
+            .then(function (resp) {
+                return resp.json();
+            })
+            .then(function (data) {
+                titulos_scripts = '';
+                scripts = '';
+                escolha = `<option selected>Escolha um tópico</option>`;
+                for (i = 0; i < data.length; i++) {
+                    titulos = `<option value="${data[i].textos.map(texto => texto.texto)}">${data[i].tipo}</option>`;
+                    script = data[i].textos.map(texto => texto.texto);
+                    titulos_scripts += titulos;
+                    scripts += script;
+                    console.log(data[i].tipo);
+                    console.log("Texto: " + data[i].textos.map(texto => texto.texto));
+
+                    let container = document.querySelector(`.titulo_script_gmail${id}`);
+                    container.innerHTML = escolha + titulos_scripts;
+                }
+            });
+    }
+
+
+    function envia_zap(numero, id) {
+        const text = $(`.modal_msg`).find(`.script_pronto_whatsapp${id}`).val();
+        console.log(text);
+
+        if (text === "") {
+            alert('Escreva uma mensagem para o destinatário');
+        } else {
+            var url = `https://wa.me//55${numero}?text=${encodeURI(text)}`;
+            window.open(url);
+
+        }
+
+    }
+
+
+    function seleciona_texto_gmail(obj) {
+        const titulo = $(".modal_msg").find(`.titulo_script_gmail${obj}`).val();
+        $(".modal_msg").find(`.script_pronto_gmail${obj}`).html(titulo);
+    }
+
+    function confirmar_pagamento(id, boleto_id, valor_boleto) {
+        $(`.div-btn${id}`).replaceWith(`<div class="col-md-6">
+                <div class="input-group mb-3">
+                <input type="date" class="form-control" id="data_pagamento${id}" placeholder="Data Pagamento" aria-label="Recipient's username" aria-describedby="button-save">
+                <input type="text" class="form-control" id="valor_pago${id}" value="${valor_boleto}" placeholder="Valor Pago" aria-label="Recipient's username" aria-describedby="button-save">
+                <button class="btn btn-success card_deal" data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmaPagamento${id}" onclick="pagamento_confirmado(${id}, ${boleto_id})" type="submit" id="button-save">Salvar</button>
+                </div>
+                </div>`);
+    }
+
+    function pagamento_confirmado(cliente_id, boleto_id) {
+        const data_pagamento = $(`#data_pagamento${cliente_id}`).val();
+        const date = new Date(data_pagamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+        const status = 'Pagamento Confirmado';
+        const valor_boleto = $(`#valor_pago${cliente_id}`).val();
+
+        var procedimento_dict = [{
+            "status": status, "data_pagamento": date, "valor_boleto": valor_boleto
+        }];
+        console.log(procedimento_dict);
+
+        $.ajax({
+            type: "POST",
+            url: "/pagamento_confirmado/" + cliente_id + "_" + boleto_id,
+            data: JSON.stringify(procedimento_dict),
+            contentType: "application/json",
+            dataType: 'json',
+            success: function (result) {
+                numRows.innerHTML = result.rows;
+            }
+        });
+
+        window.location.reload();
+    }
+
+</script>
+
+</html>
